@@ -1,6 +1,8 @@
 package com.ensas.carservice.web;
 
+import com.ensas.carservice.clients.UserRestClient;
 import com.ensas.carservice.dtos.CarDto;
+import com.ensas.carservice.models.User;
 import com.ensas.carservice.services.CarService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +15,14 @@ import java.util.List;
 @AllArgsConstructor
 public class CarRestController {
     private CarService carService;
+    private UserRestClient userRestClient;
 
     //create a car
     @PostMapping
     public ResponseEntity<CarDto> createCar(@RequestBody CarDto carDto) {
         CarDto car=carService.createCar(carDto);
+        User user = userRestClient.findUserById(car.getUserId());
+        car.setUser(user);
         return ResponseEntity.ok(car);
     }
 
