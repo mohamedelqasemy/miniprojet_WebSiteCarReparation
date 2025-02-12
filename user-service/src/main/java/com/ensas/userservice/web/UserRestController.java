@@ -31,21 +31,21 @@ public class UserRestController {
 
     //get a specific user
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long id) {
         UserDto userDto = userSerivce.getUserById(id);
         return ResponseEntity.ok(userDto);
     }
 
     //update some one
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable Long id,@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,@RequestBody UserDto userDto) {
        UserDto user = userSerivce.updateUser(id,userDto);
        return ResponseEntity.ok(user);
     }
 
     //delete some one
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
         userSerivce.deleteUser(id);
         return ResponseEntity.noContent().build();
     }

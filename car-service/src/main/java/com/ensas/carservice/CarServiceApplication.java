@@ -16,22 +16,21 @@ import java.util.List;
 public class CarServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CarServiceApplication.class, args);
-    }
-    @Bean
-    CommandLineRunner commandLineRunner(CarRepository carRepository) {
-        return args -> {
-            List<Car> cars = List.of(
-                    Car.builder()
-                            .brand("BMW")
-                            .model("m3 gtr e46")
-                            .image("path")
-                            .productionYear(new Date())
-                            .licensePlate("1234567890")
-                            .userId(1L)
-                            .build()
-            );
-            carRepository.saveAll(cars);
-        };
+        SpringApplication.run(CarServiceApplication.class, args);}
+        @Bean
+        CommandLineRunner commandLineRunner(CarRepository carRepository) {
+            return args -> {
+                List<Car> cars = List.of(
+                        Car.builder()
+                                .brand("BMW")
+                                .model("m3 gtr e46")
+                                .image("path")
+                                .productionYear(new Date())
+                                .licensePlate("1234567890")
+                                .userId(1L)
+                                .build()
+                );
+                carRepository.saveAll(cars);
+            };
     }
 }

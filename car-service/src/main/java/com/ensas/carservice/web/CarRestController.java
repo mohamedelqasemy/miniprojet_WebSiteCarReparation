@@ -14,15 +14,14 @@ import java.util.List;
 @RequestMapping("/cars")
 @AllArgsConstructor
 public class CarRestController {
-    private CarService carService;
-    private UserRestClient userRestClient;
+    private final CarService carService;
+    private final UserRestClient userRestClient;
+
 
     //create a car
     @PostMapping
     public ResponseEntity<CarDto> createCar(@RequestBody CarDto carDto) {
         CarDto car=carService.createCar(carDto);
-        User user = userRestClient.findUserById(car.getUserId());
-        car.setUser(user);
         return ResponseEntity.ok(car);
     }
 
@@ -35,21 +34,23 @@ public class CarRestController {
 
     //get a specific car
     @GetMapping("/{id}")
-    public ResponseEntity<CarDto> getCarById(@PathVariable Long id) {
+    public ResponseEntity<CarDto> getCarById(@PathVariable("id") Long id) {
         CarDto carDto = carService.getCarById(id);
+        User user = userRestClient.findUserById(carDto.getUserId());
+        carDto.setUser(user);
         return ResponseEntity.ok(carDto);
     }
 
     //update a car that exists .
     @PutMapping("/{id}")
-    public ResponseEntity<CarDto> updateCar(@PathVariable Long id,@RequestBody CarDto carDto) {
+    public ResponseEntity<CarDto> updateCar(@PathVariable("id") Long id,@RequestBody CarDto carDto) {
         CarDto car = carService.updateCar(id,carDto);
         return ResponseEntity.ok(car);
     }
 
     //delete a car that exists .
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCar(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCar(@PathVariable("id") Long id) {
         carService.deleteCar(id);
         return ResponseEntity.noContent().build();
     }
