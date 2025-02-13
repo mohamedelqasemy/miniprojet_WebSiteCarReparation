@@ -17,14 +17,6 @@ public class CarRestController {
     private final CarService carService;
     private final UserRestClient userRestClient;
 
-
-    //create a car
-    @PostMapping
-    public ResponseEntity<CarDto> createCar(@RequestBody CarDto carDto) {
-        CarDto car=carService.createCar(carDto);
-        return ResponseEntity.ok(car);
-    }
-
     //get all cars
     @GetMapping
     public ResponseEntity<List<CarDto>> getAllCars() {
@@ -39,6 +31,13 @@ public class CarRestController {
         User user = userRestClient.findUserById(carDto.getUserId());
         carDto.setUser(user);
         return ResponseEntity.ok(carDto);
+    }
+
+    //create a car
+    @PostMapping
+    public ResponseEntity<CarDto> createCar(@RequestBody CarDto carDto) {
+        CarDto car=carService.createCar(carDto);
+        return ResponseEntity.ok(car);
     }
 
     //update a car that exists .
