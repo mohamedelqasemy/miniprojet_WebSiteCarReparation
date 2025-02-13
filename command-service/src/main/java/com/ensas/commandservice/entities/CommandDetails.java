@@ -1,9 +1,6 @@
 package com.ensas.commandservice.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +15,9 @@ public class CommandDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long commandId;
+    @ManyToOne
+    @JoinColumn(name = "command_id")
+    private Command command;
     private Long equipmentId;
     private int quantity;
     private int unitPrice;
