@@ -32,7 +32,7 @@ public class ReservationService {
         newReservation.setDate(reservation.getDate());
         newReservation.setStatus(EnumStatus.Pending);
 
-        //Vérification de l'existence de l'utilisateur
+        //verify if user exist
         try {
             if (userRestClient.getUserById(reservation.getUserId()) == null) {
                 throw new RuntimeException("Utilisateur non trouvé");
@@ -41,7 +41,7 @@ public class ReservationService {
             throw new RuntimeException("Erreur lors de la vérification de l'utilisateur : " + e.getMessage());
         }
 
-        //Vérification de l'existence du service
+        //verify if service is exist
         try {
             if (serviceRestClient.getServiceById(reservation.getServiceId()) == null) {
                 throw new RuntimeException("Service non trouvé");
@@ -50,7 +50,7 @@ public class ReservationService {
             throw new RuntimeException("Erreur lors de la vérification du service : " + e.getMessage());
         }
 
-        //Vérification de l'existence de la voiture
+        //verify if car is exist
         // if (carRestClient.getCarById(reservation.getCarId()) == null) {
         //     throw new RuntimeException("Voiture non trouvée");
         // }

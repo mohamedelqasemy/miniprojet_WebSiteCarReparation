@@ -7,7 +7,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.util.Date;
 import java.util.List;
 
 @SpringBootApplication
@@ -16,6 +15,7 @@ public class ReparationServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(ReparationServiceApplication.class, args);
     }
+
     @Bean
     CommandLineRunner commandLineRunner(ReparationRepository reparationRepository) {
         return args -> {
