@@ -1,8 +1,8 @@
-package com.ensas.userservice.mappers;
+package com.ensas.paiementservice.mappers;
 
-import com.ensas.userservice.dtos.UserDto;
-import com.ensas.userservice.entities.User;
-import org.springframework.beans.BeanUtils;
+
+import com.ensas.paiementservice.models.User;
+import com.ensas.paiementservice.models.UserDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
