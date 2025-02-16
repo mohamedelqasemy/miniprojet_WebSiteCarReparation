@@ -1,7 +1,6 @@
 package com.ensas.domicileservice;
 
 import com.ensas.domicileservice.entities.RequestHome;
-import com.ensas.domicileservice.models.User;
 import com.ensas.domicileservice.repositories.RequestHomeRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

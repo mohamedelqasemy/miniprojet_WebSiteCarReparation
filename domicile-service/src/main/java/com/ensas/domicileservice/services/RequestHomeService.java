@@ -1,9 +1,9 @@
 package com.ensas.domicileservice.services;
 
 import com.ensas.domicileservice.dtos.RequestHomeDto;
+import com.ensas.domicileservice.dtos.UserDTO;
 import com.ensas.domicileservice.entities.RequestHome;
 import com.ensas.domicileservice.mappers.RequestHomeMapper;
-import com.ensas.domicileservice.models.User;
 import com.ensas.domicileservice.repositories.RequestHomeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -75,7 +75,7 @@ public class RequestHomeService {
         return RequestHomeDto.builder()
                 .id(0L)
                 .userId(0L)
-                .user(new User())
+                .user(new UserDTO())
                 .address("Not Available")
                 .serviceType("Not Available")
                 .dateDemand(new Date())

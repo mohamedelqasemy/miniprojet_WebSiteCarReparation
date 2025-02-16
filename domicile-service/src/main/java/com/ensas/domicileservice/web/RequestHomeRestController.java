@@ -2,7 +2,7 @@ package com.ensas.domicileservice.web;
 
 import com.ensas.domicileservice.clients.UserRestClient;
 import com.ensas.domicileservice.dtos.RequestHomeDto;
-import com.ensas.domicileservice.models.User;
+import com.ensas.domicileservice.dtos.UserDTO;
 import com.ensas.domicileservice.services.RequestHomeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +36,9 @@ public class RequestHomeRestController {
     @GetMapping("/{id}")
     public ResponseEntity<RequestHomeDto> getRequestHomeById(@PathVariable("id") Long id) {
         RequestHomeDto requestHomeDto = requestHomeService.getRequestHomeById(id);
-        User user = userRestClient.findUserById(requestHomeDto.getUserId());
+        UserDTO user = userRestClient.findUserById(requestHomeDto.getUserId());
         requestHomeDto.setUser(user);
+
         return ResponseEntity.ok(requestHomeDto);
     }
 

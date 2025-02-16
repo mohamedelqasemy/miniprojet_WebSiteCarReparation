@@ -1,6 +1,5 @@
 package com.ensas.domicileservice.entities;
 
-import com.ensas.domicileservice.models.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,7 +19,6 @@ public class RequestHome {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
-    private User user;
     private String serviceType;
     private String address;
     private Date dateDemand;

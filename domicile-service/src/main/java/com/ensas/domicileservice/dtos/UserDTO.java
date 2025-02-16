@@ -1,4 +1,5 @@
-package com.ensas.domicileservice.models;
+package com.ensas.domicileservice.dtos;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class User {
+public class UserDTO {
     private Long id;
     private String email;
-    private String password;
     private String firstname;
     private String lastname;
     private String role;
