@@ -1,0 +1,86 @@
+package com.ensas.domicileservice.services;
+
+import com.ensas.domicileservice.dtos.RequestHomeDto;
+import com.ensas.domicileservice.entities.RequestHome;
+import com.ensas.domicileservice.mappers.RequestHomeMapper;
+import com.ensas.domicileservice.models.User;
+import com.ensas.domicileservice.repositories.RequestHomeRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+
+@Service
+public class RequestHomeService {
+    private final RequestHomeRepository requestHomeRepository;
+
+    public RequestHomeService(RequestHomeRepository requestHomeRepository) {
+        this.requestHomeRepository = requestHomeRepository;
+    }
+    
+    public List<RequestHomeDto> getAllRequestHome(){
+        List<RequestHome> requestHomes = requestHomeRepository.findAll();
+        return RequestHomeMapper.toRequestHomeDtoList(requestHomes);
+    }
+    
+    public RequestHomeDto getRequestHomeById(Long id){
+        return requestHomeRepository.findById(id)
+                .map(RequestHomeMapper::toRequestHomeDto)
+                .orElseThrow(() -> new RuntimeException("La demande domicile non trouvé"));
+    }
+
+    public RequestHomeDto createRequestHome(RequestHomeDto requestHomeDto){
+        RequestHome requestHome = RequestHomeMapper.toRequestHome(requestHomeDto);
+        requestHome = requestHomeRepository.save(requestHome);
+        return RequestHomeMapper.toRequestHomeDto(requestHome);
+    }
+
+    @Transactional
+    public RequestHomeDto updateRequestHome(Long id,RequestHomeDto requestHomeDto) {
+        if (requestHomeDto == null || id == null) {
+            throw new IllegalArgumentException("Les données de la demande domicile ne peuvent pas être nulles");
+        }
+
+        RequestHome existingRequest = requestHomeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("La demande domicile non trouvé"));
+        
+        if (requestHomeDto.getAddress() != null) {
+            existingRequest.setAddress(requestHomeDto.getAddress());
+        }
+        if (requestHomeDto.getUserId() != null) {
+            existingRequest.setUserId(requestHomeDto.getUserId());
+        }
+        if (requestHomeDto.getServiceType() != null) {
+            existingRequest.setServiceType(requestHomeDto.getServiceType());
+        }
+        if (requestHomeDto.getStatus() != null) {
+            existingRequest.setStatus(requestHomeDto.getStatus());
+        }
+        if (requestHomeDto.getDateDemand() != null) {
+            existingRequest.setDateDemand(requestHomeDto.getDateDemand());
+        }
+
+        return RequestHomeMapper.toRequestHomeDto(existingRequest);
+    }
+
+    public void deleteRequestsHome(Long id) {
+        if (!requestHomeRepository.existsById(id)) {
+            throw new RuntimeException("Voiture non trouvé");
+        }
+        requestHomeRepository.deleteById(id);
+    }
+    
+    public RequestHomeDto defaultRequestHomeDto(){
+        return RequestHomeDto.builder()
+                .id(0L)
+                .userId(0L)
+                .user(new User())
+                .address("Not Available")
+                .serviceType("Not Available")
+                .dateDemand(new Date())
+                .status("Not Available")
+                .build();
+    }
+    
+}
