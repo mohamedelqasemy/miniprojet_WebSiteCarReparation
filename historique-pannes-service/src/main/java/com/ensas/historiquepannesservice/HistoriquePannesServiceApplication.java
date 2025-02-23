@@ -9,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.hateoas.PagedModel;
 
 import java.util.Collection;
 import java.util.Date;
@@ -28,7 +29,7 @@ public class HistoriquePannesServiceApplication {
 
         return args -> {
             Collection<CarDto> cars = carRestClient.getAllCars().getContent();
-
+            System.out.println(cars.size());
 
             cars.forEach(car -> {
                 BreakdownHistory history = BreakdownHistory.builder()
