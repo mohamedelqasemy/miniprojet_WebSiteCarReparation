@@ -37,7 +37,7 @@ public class ReservationServiceApplication {
                     Reservation.builder()
                             .date(new Date())
                             .status(EnumStatus.Pending)
-                            .serviceId(1L)
+                            .serviceId(2L)
                             .carId(1L)
                             .userId(2L)
                             .build()
