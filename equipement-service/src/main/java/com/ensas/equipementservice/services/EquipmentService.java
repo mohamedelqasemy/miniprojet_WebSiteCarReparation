@@ -2,10 +2,14 @@ package com.ensas.equipementservice.services;
 
 import com.ensas.equipementservice.dtos.EquipmentDto;
 import com.ensas.equipementservice.entities.Equipment;
+import com.ensas.equipementservice.feign.UserFeignClient;
 import com.ensas.equipementservice.mappers.EquipmentMapper;
 import com.ensas.equipementservice.repositories.EquipmentRepository;
+import feign.FeignException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -15,6 +19,7 @@ import java.util.List;
 public class EquipmentService {
 
     private final EquipmentRepository equipmentRepository;
+    private final UserFeignClient userFeignClient;
 
     public EquipmentDto createEquipment(EquipmentDto equipmentDto) {
         Equipment equipment = EquipmentMapper.toEntity(equipmentDto);
@@ -61,5 +66,14 @@ public class EquipmentService {
         equipmentRepository.deleteById(id);
     }
 
+    // Vérifier si l'utilisateur existe en utilisant Feign
+    public boolean isUserExists(Long userId) {
+        try {
+            boolean response = userFeignClient.checkUserExists(userId);
+            return response ? true : false;
+        } catch (FeignException e) {
+            return false;
+        }
+    }
 
 }

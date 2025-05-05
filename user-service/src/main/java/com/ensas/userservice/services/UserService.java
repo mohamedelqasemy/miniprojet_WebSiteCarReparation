@@ -6,6 +6,7 @@ import com.ensas.userservice.mappers.UserMapper;
 import com.ensas.userservice.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -39,7 +40,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto updateUser(Long id,UserDto userDto) {
+    public UserDto updateUser(Long id, UserDto userDto) {
         if (userDto == null || id == null) {
             throw new IllegalArgumentException("Les données de l'utilisateur ne peuvent pas être nulles");
         }
@@ -72,5 +73,8 @@ public class UserService {
     }
 
 
-
+    public boolean existsById(Long id) {
+        System.out.println("Checking if user exists with ID: " + id);
+        return userRepository.existsById(id);
+    }
 }

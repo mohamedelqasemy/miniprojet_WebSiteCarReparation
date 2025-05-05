@@ -50,7 +50,11 @@ public class UserRestController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @GetMapping("/{id}/exists")
+    public Boolean checkUserExists(@PathVariable Long id) {
+        System.out.println("==== checkUserExists ====");
+        return userSerivce.existsById(id);
+    }
 }
 
 
