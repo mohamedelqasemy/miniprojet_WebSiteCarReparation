@@ -6,6 +6,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Date;
 import java.util.List;
@@ -26,15 +28,37 @@ public class EquipementServiceApplication {
                             .description("batterie 12v tres puissant")
                             .price(500.0)
                             .quantity(10L)
+                            .image("/images/Equipement.png")
                             .build(),
                     Equipment.builder()
                             .name("moteur")
                             .description("moteur 500 cheval")
                             .price(6700.0)
                             .quantity(5L)
+                            .image("/images/Equipement.png")
+                            .build(),
+                    Equipment.builder()
+                            .name("Accessories")
+                            .description("Nice accessories")
+                            .price(700.0)
+                            .quantity(10L)
+                            .image("/images/Equipement.png")
                             .build()
             );
             equipmentRepository.saveAll(equipments);
         };
     }
+    @Bean
+    public WebMvcConfigurer webMvcConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                // Utilise le chemin relatif correct pour le dossier partagé
+                registry
+                        .addResourceHandler("/images/**")
+                        .addResourceLocations("file:../uploads/"); // Remarque: "../" pour remonter d'un niveau
+            }
+        };
+    }
+
 }

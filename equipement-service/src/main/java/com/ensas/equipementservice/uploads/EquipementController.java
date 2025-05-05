@@ -1,5 +1,4 @@
-package com.ensas.reparationservice.uploads;
-
+package com.ensas.equipementservice.uploads;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -9,20 +8,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @RestController
-public class ReparationController {
+public class EquipementController {
 
     private static final String UPLOAD_DIR = "uploads/";
 
-    @PostMapping("/reparations/upload")
+    @PostMapping("/equipments/upload")
     public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile file) {
         try {
             String originalFilename = file.getOriginalFilename();

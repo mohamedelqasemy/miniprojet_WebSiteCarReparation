@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-// Remove the @CrossOrigin annotation since we have global CORS config
 @RequestMapping("/reparations")
 @AllArgsConstructor
 public class ReparationRestController {

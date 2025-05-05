@@ -15,5 +15,5 @@ public class Equipment {
     private String description;
     private Double price;
     private Long quantity;
-
+    private String image; // Le nom ou le chemin de l’image
 }
