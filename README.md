@@ -16,7 +16,7 @@ tandis que les administrateurs peuvent gérer les équipements, les réservation
 </p>
 
 <h2>📂 Structure du projet</h2>
-<table>
+<!--table>
   <tr>
     <th>Microservice</th>
     <th>Description</th>
@@ -50,22 +50,22 @@ tandis que les administrateurs peuvent gérer les équipements, les réservation
     <td>Estimation des réparations et prédiction des revenus</td>
     <td>Python / TensorFlow</td>
   </tr>
-</table>
+</table-->
 
 <h2>🛠️ Technologies utilisées</h2>
 <ul>
-  <li><b>Backend :</b> Spring Boot, ASP.NET Core, Node.js (NestJS)</li>
-  <li><b>Base de données :</b> PostgreSQL, MongoDB</li>
-  <li><b>Communication :</b> REST API, RabbitMQ</li>
-  <li><b>Sécurité :</b> JWT, OAuth2</li>
-  <li><b>Déploiement :</b> Docker, Kubernetes</li>
+  <li><b>Backend :</b> Spring Boot</li>
+  <li><b>Base de données :</b> H2, Mysql</li>
+  <li><b>Communication :</b> REST API</li>
+  <li><b>Sécurité :</b> JWT, OAuth2,keycloak</li>
+  <li><b>Déploiement :</b> Docker</li>
 </ul>
 
 <h2>🚀 Installation</h2>
 <p>
 <b>1. Cloner le projet :</b>
 </p>
-<pre><code>git clone https://github.com/votre-repo/site-automobile.git</code></pre>
+<pre><code>git clone https://github.com/mohamedelqasemy/miniprojet_WebSiteCarReparation.git</code></pre>
 
 <p>
 <b>2. Lancer les services avec Docker :</b>
@@ -75,12 +75,12 @@ tandis que les administrateurs peuvent gérer les équipements, les réservation
 <p>
 <b>3. Accéder aux services :</b>
 </p>
-<ul>
+<!--ul>
   <li>API Utilisateurs : <code>http://localhost:8081</code></li>
   <li>API Voitures : <code>http://localhost:8082</code></li>
   <li>API Réservations : <code>http://localhost:8083</code></li>
   <li>API Marketplace : <code>http://localhost:8084</code></li>
-</ul>
+</ul-->
 
 <h2>📜 Licence</h2>
 <p>
@@ -89,6 +89,6 @@ Ce projet est sous licence MIT - voir le fichier <a href="LICENSE">LICENSE</a> p
 
 <h2>📞 Contact</h2>
 
-<H1>EL-QASEMY MOHAMED</H1>
-<H1>OTMANE KARYM</H1>
-<H1>ACHRAF OUAHAB</H1>
+<H6>EL-QASEMY MOHAMED</H6>
+<H6>OTMANE KARYM</H6>
+<H6>ACHRAF OUAHAB</H6>
