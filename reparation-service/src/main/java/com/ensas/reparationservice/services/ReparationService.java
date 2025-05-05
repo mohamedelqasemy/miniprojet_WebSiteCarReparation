@@ -7,6 +7,7 @@ import com.ensas.reparationservice.repositories.ReparationRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -47,11 +48,20 @@ public class ReparationService {
         if (reparationDto.getName() != null) {
             existingReparation.setName(reparationDto.getName());
         }
+        if (reparationDto.getType() != null) {
+            existingReparation.setType(reparationDto.getType());
+        }
+        if (reparationDto.getDateOfCreation() != null) {
+            existingReparation.setDateOfCreation(reparationDto.getDateOfCreation());
+        }
         if (reparationDto.getDescription() != null) {
             existingReparation.setDescription(reparationDto.getDescription());
         }
         if (reparationDto.getServicePrice() != null) {
             existingReparation.setServicePrice(reparationDto.getServicePrice());
+        }
+        if (reparationDto.getImage() != null) {
+            existingReparation.setImage(reparationDto.getImage());
         }
 
         return ReparationMapper.toReparationDto(existingReparation);
@@ -68,6 +78,8 @@ public class ReparationService {
                 .id(0L)
                 .name("Not Available")
                 .description("Not Available")
+                .type("en atelier")
+                .dateOfCreation(new Date())
                 .servicePrice(0.0)
                 .build();
     }
