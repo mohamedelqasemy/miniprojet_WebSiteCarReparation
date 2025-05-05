@@ -19,4 +19,5 @@ public class EquipmentDto {
     private List<String> imageLinks;
     private Double averageRating; //Moyenne des notes
     private List<String> comments; //Textes des commentaires
+
 }

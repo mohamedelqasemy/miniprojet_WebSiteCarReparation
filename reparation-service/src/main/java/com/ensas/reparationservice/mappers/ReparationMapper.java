@@ -15,7 +15,10 @@ public class ReparationMapper {
                 .id(reparation.getId())
                 .name(reparation.getName())
                 .description(reparation.getDescription())
+                .type(reparation.getType())
+                .dateOfCreation(reparation.getDateOfCreation())
                 .servicePrice(reparation.getServicePrice())
+                .image(reparation.getImage())
                 .build();
     }
 
@@ -26,7 +29,10 @@ public class ReparationMapper {
                 .id(reparationDto.getId())
                 .name(reparationDto.getName())
                 .description(reparationDto.getDescription())
+                .type(reparationDto.getType())
+                .dateOfCreation(reparationDto.getDateOfCreation())
                 .servicePrice(reparationDto.getServicePrice())
+                .image(reparationDto.getImage())
                 .build();
     }
 

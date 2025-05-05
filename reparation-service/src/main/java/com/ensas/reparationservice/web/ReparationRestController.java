@@ -35,7 +35,7 @@ public class ReparationRestController {
         return ResponseEntity.ok(reparation);
     }
 
-    //update a reparation that exists .
+    //update a reparation that exists.
     @PutMapping("/{id}")
     public ResponseEntity<ReparationDto> updateReparation(@PathVariable("id") Long id,@RequestBody ReparationDto reparationDto) {
         ReparationDto reparation = reparationService.updateReparation(id,reparationDto);
@@ -43,7 +43,7 @@ public class ReparationRestController {
     }
 
     //delete a reparation that exists
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReparation (@PathVariable("id") Long id){
         reparationService.deleteReparation(id);
         return ResponseEntity.noContent().build();

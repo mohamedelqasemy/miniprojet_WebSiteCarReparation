@@ -37,6 +37,7 @@ public class EquipmentService {
                 .map(EquipmentMapper::toDTO)
                 .orElseThrow(() -> new RuntimeException("Equipement non trouvé"));
     }
+    @Transactional
     public EquipmentDto updateEquipment(Long id, EquipmentDto equipmentDto) {
         if(id == null || equipmentDto == null) {
             throw new IllegalArgumentException("Les données de l'équipement ne peuvent pas être nulles");
@@ -56,6 +57,9 @@ public class EquipmentService {
         if(equipmentDto.getQuantity() != null) {
             existingEquipment.setQuantity(equipmentDto.getQuantity());
         }
+//        if(equipmentDto.getImage() != null) {
+//            existingEquipment.setImage(equipmentDto.getImage());
+//        }
         return EquipmentMapper.toDTO(existingEquipment);
     }
 

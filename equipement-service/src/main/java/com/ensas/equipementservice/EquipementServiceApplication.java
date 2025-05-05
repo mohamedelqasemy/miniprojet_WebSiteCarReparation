@@ -10,6 +10,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Date;
 import java.util.List;
@@ -71,5 +73,17 @@ public class EquipementServiceApplication {
             equipmentRepository.saveAll(List.of(batterie, moteur));
         };
     }
-
+    
+    @Bean
+    public WebMvcConfigurer webMvcConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                // Utilise le chemin relatif correct pour le dossier partagé
+                registry
+                        .addResourceHandler("/images/**")
+                        .addResourceLocations("file:../uploads/"); // Remarque: "../" pour remonter d'un niveau
+            }
+        };
+    }
 }
