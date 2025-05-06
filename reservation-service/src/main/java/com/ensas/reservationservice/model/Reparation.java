@@ -5,9 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Service {
+public class Reparation {
     private Long id;
     private String name;
     private String description;
-    private double price;
+    private double servicePrice;
+    private String image;
 }

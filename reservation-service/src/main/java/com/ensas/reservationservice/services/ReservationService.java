@@ -2,11 +2,21 @@ package com.ensas.reservationservice.services;
 
 import com.ensas.reservationservice.Repositories.ReservationRepository;
 import com.ensas.reservationservice.dtos.ReservationDto;
+import com.ensas.reservationservice.dtos.ReservationResponseDto;
 import com.ensas.reservationservice.entities.Reservation;
 import com.ensas.reservationservice.enums.EnumStatus;
 import com.ensas.reservationservice.feign.ServiceRestClient;
 import com.ensas.reservationservice.feign.UserRestClient;
+import com.ensas.reservationservice.mappers.ReservationMapper;
+import com.ensas.reservationservice.model.Reparation;
+import com.ensas.reservationservice.model.User;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +24,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final UserRestClient userRestClient;
@@ -27,47 +38,35 @@ public class ReservationService {
         return reservationRepository.findById(id);
     }
 
-    public Reservation createReservation(ReservationDto reservation) {
+    public Reservation createReservation(ReservationDto reservationDto) {
+        // Récupération sécurisée des entités liées
+        User user = getUserSafe(reservationDto.getUserId());
+        Reparation service = getServiceSafe(reservationDto.getServiceId());
+
         Reservation newReservation = new Reservation();
-        newReservation.setDate(reservation.getDate());
+        newReservation.setDate(reservationDto.getDate());
         newReservation.setStatus(EnumStatus.Pending);
+        newReservation.setUserId(reservationDto.getUserId());
+        newReservation.setServiceId(reservationDto.getServiceId());
+        newReservation.setCarId(reservationDto.getCarId());
 
-        //verify if user exist
-        try {
-            if (userRestClient.getUserById(reservation.getUserId()) == null) {
-                throw new RuntimeException("Utilisateur non trouvé");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Erreur lors de la vérification de l'utilisateur : " + e.getMessage());
+        // Logs si des valeurs par défaut sont utilisées
+        if ("Default".equals(user.getFirstname())) {
+            log.warn("Création avec utilisateur par défaut (ID : {})", reservationDto.getUserId());
         }
 
-        //verify if service is exist
-        try {
-            if (serviceRestClient.getServiceById(reservation.getServiceId()) == null) {
-                throw new RuntimeException("Service non trouvé");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Erreur lors de la vérification du service : " + e.getMessage());
+        if ("Service inconnu".equals(service.getName())) {
+            log.warn("Création avec service par défaut (ID : {})", reservationDto.getServiceId());
         }
 
-        //verify if car is exist
-        // if (carRestClient.getCarById(reservation.getCarId()) == null) {
-        //     throw new RuntimeException("Voiture non trouvée");
-        // }
-
-        newReservation.setUserId(reservation.getUserId());
-        newReservation.setServiceId(reservation.getServiceId());
-        newReservation.setCarId(reservation.getCarId());
-
-        reservationRepository.save(newReservation);
-        return newReservation;
+        return reservationRepository.save(newReservation);
     }
 
     public Reservation updateReservation(Long id, ReservationDto reservationDto) {
         Reservation resUpdated = reservationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Réservation non trouvée"));
 
-        //mis a jour les chose envoyer par client side
+        // Mise à jour des champs envoyés par le client
         if (reservationDto.getDate() != null) {
             resUpdated.setDate(reservationDto.getDate());
         }
@@ -80,5 +79,57 @@ public class ReservationService {
 
     public void deleteReservation(Long id) {
         reservationRepository.deleteById(id);
+    }
+
+    public Page<ReservationResponseDto> getAllReservationsPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Reservation> reservationPage = reservationRepository.findAll(pageable);
+
+        return reservationPage.map(reservation -> {
+            User user = userRestClient.getUserById(reservation.getUserId());
+            Reparation service = serviceRestClient.getServiceById(reservation.getServiceId());
+            return ReservationMapper.mapToDto(reservation, user, service);
+        });
+    }
+
+    // ====================
+    // Méthodes privées de sécurisation
+    // ====================
+
+    private User getUserSafe(Long userId) {
+        try {
+            User user = userRestClient.getUserById(userId);
+            if (user == null) throw new Exception("Utilisateur nul");
+            return user;
+        } catch (FeignException.NotFound e) {
+            log.warn("Utilisateur non trouvé (ID : {}). Utilisation d’un utilisateur par défaut. Erreur : {}", userId, e.getMessage());
+            User defaultUser = new User();
+            defaultUser.setFirstname("Default");
+            defaultUser.setLastname("User");
+            defaultUser.setEmail("anonyme@example.com");
+            return defaultUser;
+        } catch (Exception e) {
+            log.warn("Erreur lors de la récupération de l'utilisateur (ID : {}). Utilisation d’un utilisateur par défaut. Erreur : {}", userId, e.getMessage());
+            User defaultUser = new User();
+            defaultUser.setFirstname("Default");
+            defaultUser.setLastname("User");
+            defaultUser.setEmail("anonyme@example.com");
+            return defaultUser;
+        }
+    }
+
+    private Reparation getServiceSafe(Long serviceId) {
+        try {
+            Reparation service = serviceRestClient.getServiceById(serviceId);
+            if (service == null) throw new Exception("Service nul");
+            return service;
+        } catch (Exception e) {
+            log.warn("Service non trouvé (ID : {}). Utilisation d’un service par défaut. Erreur : {}", serviceId, e.getMessage());
+            Reparation defaultService = new Reparation();
+            defaultService.setName("Service inconnu");
+            defaultService.setServicePrice(0.0);
+            defaultService.setImage("default.jpg");
+            return defaultService;
+        }
     }
 }

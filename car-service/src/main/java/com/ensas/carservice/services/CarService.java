@@ -5,6 +5,10 @@ import com.ensas.carservice.entities.Car;
 import com.ensas.carservice.mappers.CarMapper;
 import com.ensas.carservice.repositories.CarRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -82,5 +86,10 @@ public class CarService {
                 .userId(0L)
                 .build();
     }
-    
+
+    public Page<CarDto> getAllCarsPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending()); // ou autre tri
+        return carRepository.findAll(pageable)
+                .map(CarMapper::toCarDto);
+    }
 }

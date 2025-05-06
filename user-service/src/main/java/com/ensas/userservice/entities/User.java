@@ -19,4 +19,5 @@ public class User {
     private String role;
     private boolean enabled;
     private Date created;
+    private String address;
 }

@@ -5,10 +5,8 @@ import lombok.*;
 
 import java.util.Date;
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter @Setter
-@Builder
+@AllArgsConstructor @NoArgsConstructor @Builder
 @Table(name = "cars")
 public class Car {
     @Id

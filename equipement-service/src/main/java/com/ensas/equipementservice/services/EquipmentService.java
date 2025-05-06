@@ -8,6 +8,10 @@ import com.ensas.equipementservice.repositories.EquipmentRepository;
 import feign.FeignException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -80,4 +84,9 @@ public class EquipmentService {
         }
     }
 
+    public Page<EquipmentDto> getAllEquipmentPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending()); // ou autre tri
+        return equipmentRepository.findAll(pageable)
+                .map(EquipmentMapper::toDTO);
+    }
 }

@@ -1,6 +1,7 @@
 package com.ensas.reservationservice;
 
 import com.ensas.reservationservice.Repositories.ReservationRepository;
+import com.ensas.reservationservice.dtos.ReservationDto;
 import com.ensas.reservationservice.entities.Reservation;
 import com.ensas.reservationservice.enums.EnumStatus;
 import com.ensas.reservationservice.services.ReservationService;
@@ -23,26 +24,27 @@ public class ReservationServiceApplication {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(ReservationRepository reservationRepository) {
+    CommandLineRunner commandLineRunner(ReservationService reservationService) {
         return args -> {
-            List<Reservation> reservations = List.of(
-                    Reservation.builder()
-                            .date(new Date())
-                            .status(EnumStatus.Pending)
-                            .serviceId(1L)
-                            .carId(1L)
-                            .userId(1L)
-                            .build()
-                    ,
-                    Reservation.builder()
-                            .date(new Date())
-                            .status(EnumStatus.Pending)
-                            .serviceId(2L)
-                            .carId(1L)
-                            .userId(2L)
-                            .build()
+            List<ReservationDto> reservationDtos = List.of(
+                    new ReservationDto(null, new Date(), EnumStatus.Pending, 1L, 1L, 1L),
+                    new ReservationDto(null, new Date(), EnumStatus.Pending, 2L, 2L, 2L),
+                    new ReservationDto(null, new Date(), EnumStatus.Pending, 3L, 3L, 2L),
+                    new ReservationDto(null, new Date(), EnumStatus.Pending, 4L, 4L, 2L),
+                    new ReservationDto(null, new Date(), EnumStatus.Pending, 5L, 5L, 2L),
+                    new ReservationDto(null, new Date(), EnumStatus.Pending, 6L, 6L, 2L)
+
+
             );
-            reservationRepository.saveAll(reservations);
+
+            reservationDtos.forEach(dto -> {
+                try {
+                    Reservation created = reservationService.createReservation(dto);
+                    System.out.println("Réservation créée avec ID : " + created.getId());
+                } catch (Exception e) {
+                    System.err.println("Erreur lors de la création de réservation : " + e.getMessage());
+                }
+            });
         };
     }
 

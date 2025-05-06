@@ -5,6 +5,7 @@ import com.ensas.carservice.dtos.CarDto;
 import com.ensas.carservice.models.User;
 import com.ensas.carservice.services.CarService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cars")
-@AllArgsConstructor
+@AllArgsConstructor()
 public class CarRestController {
     private final CarService carService;
     private final UserRestClient userRestClient;
@@ -30,6 +31,13 @@ public class CarRestController {
     public ResponseEntity<List<CarDto>> getAllCars() {
         List<CarDto> carDtoList = carService.getAllCars();
         return ResponseEntity.ok(carDtoList);
+    }
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<CarDto>> getAllCars(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<CarDto> cars = carService.getAllCarsPaginated(page, size);
+        return ResponseEntity.ok(cars);
     }
 
     //get a specific car

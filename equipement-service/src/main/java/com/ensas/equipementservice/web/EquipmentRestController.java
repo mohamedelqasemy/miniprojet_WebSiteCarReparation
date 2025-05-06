@@ -3,6 +3,7 @@ package com.ensas.equipementservice.web;
 import com.ensas.equipementservice.dtos.EquipmentDto;
 import com.ensas.equipementservice.services.EquipmentService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,11 +13,19 @@ import java.util.List;
 @RequestMapping("/equipments")
 @AllArgsConstructor()
 public class EquipmentRestController {
-    private EquipmentService equipmentService;
+    private final EquipmentService equipmentService;
 
     @GetMapping
     public ResponseEntity<List<EquipmentDto>> getAllEquipments() {
         List<EquipmentDto> equipmentsDto = equipmentService.getAllEquipment();
+        return ResponseEntity.ok(equipmentsDto);
+    }
+
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<EquipmentDto>> getAllEquipments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<EquipmentDto> equipmentsDto = equipmentService.getAllEquipmentPaginated(page, size);
         return ResponseEntity.ok(equipmentsDto);
     }
 

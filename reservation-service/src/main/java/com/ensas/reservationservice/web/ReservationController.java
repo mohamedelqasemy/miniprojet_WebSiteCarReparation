@@ -1,9 +1,11 @@
 package com.ensas.reservationservice.web;
 
 import com.ensas.reservationservice.dtos.ReservationDto;
+import com.ensas.reservationservice.dtos.ReservationResponseDto;
 import com.ensas.reservationservice.entities.Reservation;
 import com.ensas.reservationservice.services.ReservationService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +28,14 @@ public class ReservationController {
     @GetMapping
     public ResponseEntity<List<Reservation>> getAllReservations() {
         List<Reservation> reservations = reservationService.getAllReservations();
+        return ResponseEntity.ok(reservations);
+    }
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<ReservationResponseDto>> getAllReservationsPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Page<ReservationResponseDto> reservations = reservationService.getAllReservationsPaginated(page, size);
         return ResponseEntity.ok(reservations);
     }
 
