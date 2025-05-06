@@ -29,6 +29,11 @@ public class RequestHomeRestController {
     @GetMapping
     public ResponseEntity<List<RequestHomeDto>> getAllRequestsHome() {
         List<RequestHomeDto> requestHomeDtoList = requestHomeService.getAllRequestHome();
+        requestHomeDtoList.forEach( home-> {
+            UserDTO user = userRestClient.findUserById(home.getUserId());
+            home.setUser(user);
+
+        });
         return ResponseEntity.ok(requestHomeDtoList);
     }
 
