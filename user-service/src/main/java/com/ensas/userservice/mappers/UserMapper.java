@@ -14,7 +14,7 @@ public class UserMapper {
         if (user == null) {
             return null;
         }
-        return new UserDto(user.getId(), user.getEmail(), user.getPassword(), user.getFirstname(), user.getLastname(), user.getRole());
+        return new UserDto(user.getId(), user.getEmail(), user.getPassword(), user.getFirstname(), user.getLastname(), user.getRole(), user.getImage(), user.getCreated());
     }
 
     // Convertir un DTO en Entité
@@ -22,7 +22,7 @@ public class UserMapper {
         if (userDTO == null) {
             return null;
         }
-        return new User(userDTO.getId(), userDTO.getEmail(), userDTO.getPassword(), userDTO.getFirstname(), userDTO.getLastname(), userDTO.getRole(), false,null);
+        return new User(userDTO.getId(), userDTO.getEmail(), userDTO.getPassword(), userDTO.getFirstname(), userDTO.getLastname(), userDTO.getRole(), false, userDTO.getImage(), userDTO.getCreated());
     }
 
     // Convertir une liste d'Entités en liste de DTOs

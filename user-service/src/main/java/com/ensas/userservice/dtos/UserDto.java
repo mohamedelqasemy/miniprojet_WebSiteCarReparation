@@ -20,4 +20,6 @@ public class UserDto {
     private String firstname;
     private String lastname;
     private String role;
+    private String image;
+    private Date created;
 }

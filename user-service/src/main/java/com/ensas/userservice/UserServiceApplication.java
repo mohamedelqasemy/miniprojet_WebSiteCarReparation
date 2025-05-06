@@ -27,6 +27,7 @@ public class UserServiceApplication {
                             .password("password1")
                             .role("ADMIN")
                             .enabled(true)
+                            .image("https://exemple.com/profile1.png")
                             .created(new Date())
                     .build(),
                     User.builder()
@@ -37,6 +38,27 @@ public class UserServiceApplication {
                             .role("USER")
                             .enabled(true)
                             .created(new Date())
+                            .image("https://exemple.com/profile2.png")
+                            .build(),
+                    User.builder()
+                            .firstname("John3")
+                            .lastname("Doe3")
+                            .email("john3.doe@gmail.com")
+                            .password("password3")
+                            .role("USER")
+                            .enabled(true)
+                            .created(new Date())
+                            .image("https://exemple.com/profile3.png")
+                            .build(),
+                    User.builder()
+                            .firstname("John4")
+                            .lastname("Doe4")
+                            .email("john4.doe@gmail.com")
+                            .password("password4")
+                            .role("USER")
+                            .enabled(true)
+                            .created(new Date())
+                            .image("https://exemple.com/profile4.png")
                             .build()
 
             );
