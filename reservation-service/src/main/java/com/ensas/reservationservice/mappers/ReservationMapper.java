@@ -19,7 +19,6 @@ public class ReservationMapper {
         dto.setPrix(reparation.getServicePrice());
         dto.setTypeService(reparation.getName());
         dto.setImage(reparation.getImage());
-//        System.out.println("hahowa prix ==> "+reparation.getPrice());
         return dto;
     }
 }

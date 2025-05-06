@@ -18,6 +18,8 @@ public class UserMapper {
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
                 .role(user.getRole())
+                .created(user.getCreated())
+                .image(user.getImage())
                 .address(user.getAddress())
                 .build();
     }
@@ -33,6 +35,9 @@ public class UserMapper {
                 .lastname(userDTO.getLastname())
                 .role(userDTO.getRole())
                 .address(userDTO.getAddress())
+                .created(userDTO.getCreated())
+                .enabled(false)
+                .image(userDTO.getImage())
                 .build();
     }
 

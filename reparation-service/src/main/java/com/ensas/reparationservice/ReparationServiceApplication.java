@@ -90,7 +90,7 @@ public class ReparationServiceApplication {
                             .type("En atelier")
                             .dateOfCreation(new Date())
                             .servicePrice(250.0)
-                            .image("/images/Moteur.png")
+                            .image("/images/Diagnostic.png")
                             .build(),
 
                     // Tire repair and replacement

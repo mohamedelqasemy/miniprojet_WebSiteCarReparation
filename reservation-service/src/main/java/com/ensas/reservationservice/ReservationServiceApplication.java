@@ -29,10 +29,10 @@ public class ReservationServiceApplication {
             List<ReservationDto> reservationDtos = List.of(
                     new ReservationDto(null, new Date(), EnumStatus.Pending, 1L, 1L, 1L),
                     new ReservationDto(null, new Date(), EnumStatus.Pending, 2L, 2L, 2L),
-                    new ReservationDto(null, new Date(), EnumStatus.Pending, 3L, 3L, 2L),
-                    new ReservationDto(null, new Date(), EnumStatus.Pending, 4L, 4L, 2L),
-                    new ReservationDto(null, new Date(), EnumStatus.Pending, 5L, 5L, 2L),
-                    new ReservationDto(null, new Date(), EnumStatus.Pending, 6L, 6L, 2L)
+                    new ReservationDto(null, new Date(), EnumStatus.Pending, 3L, 3L, 3L),
+                    new ReservationDto(null, new Date(), EnumStatus.Pending, 4L, 4L, 4L),
+                    new ReservationDto(null, new Date(), EnumStatus.Pending, 1L, 2L, 5L),
+                    new ReservationDto(null, new Date(), EnumStatus.Pending, 2L, 4L, 6L)
 
 
             );

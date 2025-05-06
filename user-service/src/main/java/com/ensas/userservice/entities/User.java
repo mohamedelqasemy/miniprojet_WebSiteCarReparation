@@ -17,7 +17,8 @@ public class User {
     private String firstname;
     private String lastname;
     private String role;
-    private boolean enabled;
+    private Boolean enabled;
+    private String image;
     private Date created;
     private String address;
 }
