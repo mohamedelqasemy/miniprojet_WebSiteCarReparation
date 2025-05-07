@@ -96,7 +96,7 @@ public class UserService {
     }
 
     @Transactional
-    public void uploadImage(final Long id, final MultipartFile file) {
+    public String uploadImage(final Long id, final MultipartFile file) {
         final User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("user not found"));
         FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
@@ -105,5 +105,6 @@ public class UserService {
         user.setImage(response.getUrl());
         user.setPublicId(response.getPublicId());
         userRepository.save(user);
+        return response.getUrl();
     }
 }

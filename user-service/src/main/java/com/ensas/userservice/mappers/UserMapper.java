@@ -19,6 +19,7 @@ public class UserMapper {
                 .lastname(user.getLastname())
                 .num(user.getNum())
                 .role(user.getRole())
+                .enabled(user.getEnabled())
                 .created(user.getCreated())
                 .image(user.getImage())
                 .publicId(user.getPublicId())

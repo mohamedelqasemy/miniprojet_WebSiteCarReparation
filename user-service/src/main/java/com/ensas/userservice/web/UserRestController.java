@@ -70,8 +70,8 @@ public class UserRestController {
 
     @PostMapping("/image/{id}")
     public ResponseEntity<?> uploadImage(@PathVariable final Long id, @RequestPart final MultipartFile file) {
-        userService.uploadImage(id, file);
-        return ResponseEntity.ok("Upload successfully");
+        String url = userService.uploadImage(id, file);
+        return ResponseEntity.ok(url);
     }
 }
 

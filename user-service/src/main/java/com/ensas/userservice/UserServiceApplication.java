@@ -28,7 +28,8 @@ public class UserServiceApplication {
                             .num("0645454545")
                             .role("ADMIN")
                             .enabled(true)
-                            .image("/images/Profile.png")
+                            .publicId("atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658")
+                            .image("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746615425/atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658.jpg")
                             .created(new Date())
                     .build(),
                     User.builder()
@@ -40,7 +41,8 @@ public class UserServiceApplication {
                             .num("0732333333")
                             .enabled(true)
                             .created(new Date())
-                            .image("/images/Profile.png")
+                            .publicId("atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658")
+                            .image("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746615425/atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658.jpg")
                             .build(),
                     User.builder()
                             .firstname("John3")
@@ -51,7 +53,8 @@ public class UserServiceApplication {
                             .enabled(true)
                             .created(new Date())
                             .num("0755667788")
-                            .image("/images/Profile.png")
+                            .publicId("atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658")
+                            .image("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746615425/atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658.jpg")
                             .build(),
                     User.builder()
                             .firstname("John4")
@@ -62,7 +65,8 @@ public class UserServiceApplication {
                             .num("0655449999")
                             .enabled(true)
                             .created(new Date())
-                            .image("/images/Profile.png")
+                            .publicId("atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658")
+                            .image("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746615425/atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658.jpg")
                             .build(),
                     User.builder()
                             .firstname("John5")
@@ -73,7 +77,8 @@ public class UserServiceApplication {
                             .num("0688453925")
                             .enabled(true)
                             .created(new Date())
-                            .image("/images/Profile.png")
+                            .publicId("atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658")
+                            .image("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746615425/atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658.jpg")
                             .build()
             );
 

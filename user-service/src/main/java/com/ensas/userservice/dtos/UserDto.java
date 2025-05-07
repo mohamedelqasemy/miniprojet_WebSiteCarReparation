@@ -22,5 +22,6 @@ public class UserDto {
     private String address;
     private String image;
     private String publicId;
+    private boolean enabled;
     private Date created;
 }
