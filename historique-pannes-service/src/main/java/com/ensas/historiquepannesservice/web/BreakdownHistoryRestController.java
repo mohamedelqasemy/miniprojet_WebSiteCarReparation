@@ -7,6 +7,7 @@ import com.ensas.historiquepannesservice.models.Car;
 import com.ensas.historiquepannesservice.services.BreakdownHistoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class BreakdownHistoryRestController {
         List<BreakdownHistoryDto> histories = breakdownHistoryService.getAllBreakdownHistory();
         histories.forEach(history -> {
             Car car = CarMapper.toCar(carRestClient.getCarById(history.getCarId()));
-            history.setCar(car);
+            history.setCar(CarMapper.toCarDto(car));
 
                 });
         return ResponseEntity.ok(histories);
@@ -35,7 +36,7 @@ public class BreakdownHistoryRestController {
     public ResponseEntity<BreakdownHistoryDto> getBreakdownHistoryById(@PathVariable("id") Long id) {
         BreakdownHistoryDto history = breakdownHistoryService.getBreakdownHistoryById(id);
         Car car = CarMapper.toCar(carRestClient.getCarById(history.getCarId()));
-        history.setCar(car);
+        history.setCar(CarMapper.toCarDto(car));
         System.out.println(carRestClient.getCarById(history.getCarId()).toString());
         return ResponseEntity.ok(history);
     }
@@ -56,6 +57,15 @@ public class BreakdownHistoryRestController {
     public ResponseEntity<?> deleteHistory(@PathVariable("id") Long id) {
         breakdownHistoryService.deleteBreakdownHistory(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<BreakdownHistoryDto>> getAllBreaksPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Page<BreakdownHistoryDto> breaks = breakdownHistoryService.getAllBreaksPaginated(page, size);
+        return ResponseEntity.ok(breaks);
     }
 
 }

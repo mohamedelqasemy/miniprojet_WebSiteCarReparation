@@ -15,6 +15,7 @@ public class BreakdownHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Date datePanne;
+    private String nomPanne;
     private String description;
     private Boolean isRepaired;
 

@@ -35,7 +35,8 @@ public class HistoriquePannesServiceApplication {
                 BreakdownHistory history = BreakdownHistory.builder()
                         .datePanne(new Date())
                         .isRepaired(false)
-                        .description("panne dans le batterie")
+                        .nomPanne("panne dans le batterie")
+                        .description("une défaillance des cellules ou du circuit de gestion (BMS)")
                         .carId(car.getId())
                         .build();
                 breakdownHistoryRepository.save(history);

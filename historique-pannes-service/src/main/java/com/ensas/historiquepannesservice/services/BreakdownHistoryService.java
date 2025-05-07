@@ -2,9 +2,16 @@ package com.ensas.historiquepannesservice.services;
 
 import com.ensas.historiquepannesservice.dtos.BreakdownHistoryDto;
 import com.ensas.historiquepannesservice.entities.BreakdownHistory;
+import com.ensas.historiquepannesservice.feign.CarRestClient;
 import com.ensas.historiquepannesservice.mappers.BreakdownHistoryMapper;
+import com.ensas.historiquepannesservice.mappers.CarMapper;
+import com.ensas.historiquepannesservice.models.CarDto;
 import com.ensas.historiquepannesservice.repositories.BreakdownHistoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BreakdownHistoryService {
     private final BreakdownHistoryRepository repository;
+    private final BreakdownHistoryRepository breakdownHistoryRepository;
+    private final CarRestClient carRestClient;
 
     public List<BreakdownHistoryDto> getAllBreakdownHistory() {
         List<BreakdownHistory> breakdownHistories = repository.findAll();
@@ -48,7 +57,7 @@ public class BreakdownHistoryService {
             existingHistory.setIsRepaired(breakdownHistoryDto.getIsRepaired());
         }
         if(breakdownHistoryDto.getCar() != null) {
-            existingHistory.setCar(breakdownHistoryDto.getCar());
+            existingHistory.setCar(CarMapper.toCar(breakdownHistoryDto.getCar()));
         }
         if(breakdownHistoryDto.getCarId() != null) {
             existingHistory.setCarId(breakdownHistoryDto.getCarId());
@@ -61,5 +70,16 @@ public class BreakdownHistoryService {
             throw new RuntimeException("Historique de panne non trouvé");
         }
         repository.deleteById(id);
+    }
+    public Page<BreakdownHistoryDto> getAllBreaksPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<BreakdownHistory> reservationPage = breakdownHistoryRepository.findAll(pageable);
+
+        return reservationPage.map(breakDown -> {
+            CarDto car = carRestClient.getCarById(breakDown.getCarId());
+            BreakdownHistoryDto breakdownHistoryDto = BreakdownHistoryMapper.toDto(breakDown);
+            breakdownHistoryDto.setCar(car);
+            return breakdownHistoryDto;
+        });
     }
 }
