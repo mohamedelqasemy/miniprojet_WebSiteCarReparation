@@ -21,6 +21,7 @@ public class UserMapper {
                 .role(user.getRole())
                 .created(user.getCreated())
                 .image(user.getImage())
+                .publicId(user.getPublicId())
                 .address(user.getAddress())
                 .build();
     }
@@ -40,6 +41,7 @@ public class UserMapper {
                 .created(userDTO.getCreated())
                 .enabled(false)
                 .image(userDTO.getImage())
+                .publicId(userDTO.getPublicId())
                 .build();
     }
 

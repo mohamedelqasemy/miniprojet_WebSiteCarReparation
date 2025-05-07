@@ -21,5 +21,6 @@ public class UserDto {
     private String role;
     private String address;
     private String image;
+    private String publicId;
     private Date created;
 }

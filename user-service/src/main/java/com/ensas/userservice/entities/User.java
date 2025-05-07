@@ -20,6 +20,7 @@ public class User {
     private String role;
     private Boolean enabled;
     private String image;
+    private String publicId;
     private Date created;
     private String address;
 }

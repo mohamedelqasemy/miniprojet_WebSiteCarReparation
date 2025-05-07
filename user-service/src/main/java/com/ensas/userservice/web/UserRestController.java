@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -64,6 +65,13 @@ public class UserRestController {
     ) {
         Page<UserDto> users = userService.getAllUsersPaginated(page, size);
         return ResponseEntity.ok(users);
+    }
+
+
+    @PostMapping("/image/{id}")
+    public ResponseEntity<?> uploadImage(@PathVariable final Long id, @RequestPart final MultipartFile file) {
+        userService.uploadImage(id, file);
+        return ResponseEntity.ok("Upload successfully");
     }
 }
 

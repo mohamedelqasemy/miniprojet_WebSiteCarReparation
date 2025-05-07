@@ -1,10 +1,13 @@
 package com.ensas.userservice.services;
 
+import com.ensas.userservice.dtos.CloudinaryResponse;
 import com.ensas.userservice.dtos.UserDto;
 import com.ensas.userservice.entities.User;
 import com.ensas.userservice.mappers.UserMapper;
 import com.ensas.userservice.repositories.UserRepository;
+import com.ensas.userservice.util.FileUploadUtil;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
@@ -22,6 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final CloudinaryService cloudinaryService;
 
     public UserDto createUser(UserDto userDto) {
         User newUser = UserMapper.toEntity(userDto);
@@ -88,5 +93,17 @@ public class UserService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<User> userPage = userRepository.findAll(pageable);
         return userPage.map(UserMapper::toDTO);
+    }
+
+    @Transactional
+    public void uploadImage(final Long id, final MultipartFile file) {
+        final User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("user not found"));
+        FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
+        final String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
+        final CloudinaryResponse response = cloudinaryService.uploadFile(file, fileName);
+        user.setImage(response.getUrl());
+        user.setPublicId(response.getPublicId());
+        userRepository.save(user);
     }
 }
