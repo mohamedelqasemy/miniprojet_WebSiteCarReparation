@@ -6,6 +6,10 @@ import com.ensas.userservice.mappers.UserMapper;
 import com.ensas.userservice.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -78,5 +82,11 @@ public class UserService {
     public boolean existsById(Long id) {
         System.out.println("Checking if user exists with ID: " + id);
         return userRepository.existsById(id);
+    }
+
+    public Page<UserDto> getAllUsersPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<User> userPage = userRepository.findAll(pageable);
+        return userPage.map(UserMapper::toDTO);
     }
 }

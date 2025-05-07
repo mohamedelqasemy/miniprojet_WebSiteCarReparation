@@ -64,7 +64,7 @@ public class RequestHomeRestController {
 
 
     @GetMapping("/paginated")
-    public ResponseEntity<Page<RequestHomeDto>> getAllReservationsPaginated(
+    public ResponseEntity<Page<RequestHomeDto>> getAllRequestPaginated(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
