@@ -1,12 +1,15 @@
 package com.ensas.equipementservice.services;
 
+import com.ensas.equipementservice.dtos.CloudinaryResponse;
 import com.ensas.equipementservice.dtos.EquipmentDto;
 import com.ensas.equipementservice.entities.Equipment;
+import com.ensas.equipementservice.entities.ImageEquipment;
 import com.ensas.equipementservice.feign.UserFeignClient;
 import com.ensas.equipementservice.mappers.EquipmentMapper;
 import com.ensas.equipementservice.repositories.EquipmentRepository;
 import feign.FeignException;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -24,6 +28,7 @@ public class EquipmentService {
 
     private final EquipmentRepository equipmentRepository;
     private final UserFeignClient userFeignClient;
+    private final CloudinaryService cloudinaryService;
 
     public EquipmentDto createEquipment(EquipmentDto equipmentDto) {
         Equipment equipment = EquipmentMapper.toEntity(equipmentDto);
@@ -89,4 +94,29 @@ public class EquipmentService {
         return equipmentRepository.findAll(pageable)
                 .map(EquipmentMapper::toDTO);
     }
+
+    @Transactional
+    public String uploadImage(final Long id, final MultipartFile file) {
+        Equipment equipment = equipmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Équipement non trouvé"));
+
+        // 1. Upload vers Cloudinary
+        CloudinaryResponse cloudinaryResponse = cloudinaryService.uploadFile(file, "equipement_" + id);
+
+        // 2. Créer une nouvelle image et la lier à l’équipement
+        ImageEquipment image = new ImageEquipment();
+        image.setImageLink(cloudinaryResponse.getUrl());
+        image.setEquipment(equipment); // Lien bidirectionnel
+
+        // 3. Ajouter à la liste des images
+        equipment.getImages().add(image);
+
+        // 4. Sauvegarder l’équipement (cascade = ALL s'occupe du persist de l'image)
+        equipmentRepository.save(equipment);
+
+        return cloudinaryResponse.getUrl();
+    }
+
+
+
 }

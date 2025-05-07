@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -51,4 +52,13 @@ public class EquipmentRestController {
         return ResponseEntity.ok(equipment);
 
     }
+
+    @PostMapping("/{id}/upload-image")
+    public ResponseEntity<String> uploadImage(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        String imageUrl = equipmentService.uploadImage(id, file);
+        return ResponseEntity.ok(imageUrl);
+    }
+
 }
