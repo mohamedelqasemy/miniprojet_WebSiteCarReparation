@@ -5,6 +5,7 @@ import com.ensas.domicileservice.dtos.RequestHomeDto;
 import com.ensas.domicileservice.dtos.UserDTO;
 import com.ensas.domicileservice.services.RequestHomeService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,5 +60,15 @@ public class RequestHomeRestController {
     public ResponseEntity<?> deleteRequestHome(@PathVariable("id") Long id) {
         requestHomeService.deleteRequestsHome(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<RequestHomeDto>> getAllReservationsPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Page<RequestHomeDto> requests = requestHomeService.getAllRequestPaginated(page, size);
+        return ResponseEntity.ok(requests);
     }
 }

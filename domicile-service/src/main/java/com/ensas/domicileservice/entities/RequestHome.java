@@ -1,5 +1,6 @@
 package com.ensas.domicileservice.entities;
 
+import com.ensas.domicileservice.dtos.UserDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

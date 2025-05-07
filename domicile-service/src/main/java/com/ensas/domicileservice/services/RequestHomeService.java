@@ -1,11 +1,16 @@
 package com.ensas.domicileservice.services;
 
+import com.ensas.domicileservice.clients.UserRestClient;
 import com.ensas.domicileservice.dtos.RequestHomeDto;
 import com.ensas.domicileservice.dtos.UserDTO;
 import com.ensas.domicileservice.entities.RequestHome;
 import com.ensas.domicileservice.mappers.RequestHomeMapper;
 import com.ensas.domicileservice.repositories.RequestHomeRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -14,9 +19,11 @@ import java.util.List;
 @Service
 public class RequestHomeService {
     private final RequestHomeRepository requestHomeRepository;
+    private final UserRestClient userRestClient;
 
-    public RequestHomeService(RequestHomeRepository requestHomeRepository) {
+    public RequestHomeService(RequestHomeRepository requestHomeRepository, UserRestClient userRestClient) {
         this.requestHomeRepository = requestHomeRepository;
+        this.userRestClient = userRestClient;
     }
     
     public List<RequestHomeDto> getAllRequestHome(){
@@ -81,6 +88,18 @@ public class RequestHomeService {
                 .dateDemand(new Date())
                 .status("Not Available")
                 .build();
+    }
+
+    public Page<RequestHomeDto> getAllRequestPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<RequestHome> reservationPage = requestHomeRepository.findAll(pageable);
+
+        return reservationPage.map(request -> {
+            UserDTO user = userRestClient.findUserById(request.getUserId());
+            RequestHomeDto requestHomeDto = RequestHomeMapper.toRequestHomeDto(request);
+            requestHomeDto.setUser(user);
+            return requestHomeDto;
+        });
     }
     
 }
