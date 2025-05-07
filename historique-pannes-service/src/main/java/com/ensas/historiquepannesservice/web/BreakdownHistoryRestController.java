@@ -68,4 +68,14 @@ public class BreakdownHistoryRestController {
         return ResponseEntity.ok(breaks);
     }
 
+    @GetMapping("/paginated/{carId}")
+    public ResponseEntity<Page<BreakdownHistoryDto>> getBreaksPaginatedByCarId(
+            @PathVariable("carId") Long carId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Page<BreakdownHistoryDto> breaks = breakdownHistoryService.getBreaksPaginatedByCarId(carId,page, size);
+        return ResponseEntity.ok(breaks);
+    }
+
 }

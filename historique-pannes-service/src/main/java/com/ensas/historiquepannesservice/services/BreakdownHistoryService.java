@@ -73,7 +73,19 @@ public class BreakdownHistoryService {
     }
     public Page<BreakdownHistoryDto> getAllBreaksPaginated(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<BreakdownHistory> reservationPage = breakdownHistoryRepository.findAll(pageable);
+        Page<BreakdownHistory> breaksPage = breakdownHistoryRepository.findAll(pageable);
+
+        return breaksPage.map(breakDown -> {
+            CarDto car = carRestClient.getCarById(breakDown.getCarId());
+            BreakdownHistoryDto breakdownHistoryDto = BreakdownHistoryMapper.toDto(breakDown);
+            breakdownHistoryDto.setCar(car);
+            return breakdownHistoryDto;
+        });
+    }
+
+    public Page<BreakdownHistoryDto> getBreaksPaginatedByCarId(Long carId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<BreakdownHistory> reservationPage = breakdownHistoryRepository.findByCarId(carId, pageable);
 
         return reservationPage.map(breakDown -> {
             CarDto car = carRestClient.getCarById(breakDown.getCarId());
