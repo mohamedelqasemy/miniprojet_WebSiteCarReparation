@@ -2,81 +2,98 @@ package com.ensas.commandservice.services;
 
 import com.ensas.commandservice.dtos.CommandDto;
 import com.ensas.commandservice.entities.Command;
+import com.ensas.commandservice.feign.EquipmentRestClient;
 import com.ensas.commandservice.mappers.CommandMapper;
+import com.ensas.commandservice.models.Equipment;
 import com.ensas.commandservice.repositories.CommandRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-
 
 @Service
 @RequiredArgsConstructor
 public class CommandService {
     private final CommandRepository commandRepository;
+    private final EquipmentRestClient equipmentRestClient;
 
-    //creat a command
+    // Créer une commande
     public CommandDto createCommand(CommandDto commandDto) {
         Command newCommand = CommandMapper.toEntity(commandDto);
+        newCommand.setDate(new Date());
         Command savedCommand = commandRepository.save(newCommand);
-        return CommandMapper.toDTO(savedCommand);
+        return enrichCommandDto(CommandMapper.toDTO(savedCommand));
     }
 
-    //retrieve all commands
-    public List<CommandDto> getAllCommands() {
-        List<Command> commandList = (List<Command>) commandRepository.findAll();
-        return CommandMapper.toDTOList(commandList);
+    // Récupérer toutes les commandes avec pagination
+    public Page<CommandDto> getAllCommands(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("date").descending());
+        Page<Command> commandPage = commandRepository.findAll(pageRequest);
+        return commandPage.map(command -> enrichCommandDto(CommandMapper.toDTO(command)));
     }
 
-    //get a specific command
+    // Récupérer une commande spécifique
     public CommandDto getCommandById(Long id) {
         return commandRepository.findById(id)
                 .map(CommandMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("commande non trouvé"));
+                .map(this::enrichCommandDto)
+                .orElseThrow(() -> new RuntimeException("Commande non trouvée"));
     }
 
-    //update a specific command
+    // Mettre à jour une commande
     public CommandDto updateCommand(Long id, CommandDto commandDto) {
         Command command = commandRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Commande non trouvée"));
 
-        // Mise à jour des champs principaux
-        if (commandDto.getStatus() != null) {
-            command.setStatus(commandDto.getStatus());
-        }
-        if (commandDto.getTotal() != command.getTotal()) {
-            command.setTotal(commandDto.getTotal());
-        }
-        if (commandDto.getDate() != null) {
-            command.setDate(commandDto.getDate());
-        }
-        if (commandDto.getUserId() != null) {
-            command.setUserId(commandDto.getUserId());
-        }
+        if (commandDto.getStatus() != null) command.setStatus(commandDto.getStatus());
+        if (commandDto.getDate() != null) command.setDate(commandDto.getDate());
+        if (commandDto.getUserId() != null) command.setUserId(commandDto.getUserId());
 
-        // Mise à jour des détails de la commande
         if (commandDto.getCommandDetails() != null) {
             command.getCommandDetails().clear();
-            commandDto.getCommandDetails().forEach(detailsDto -> {
-                command.getCommandDetails().add(CommandMapper.toEntity(detailsDto, command));
-            });
+            commandDto.getCommandDetails().forEach(detailDto ->
+                    command.getCommandDetails().add(CommandMapper.toEntity(detailDto, command))
+            );
         }
 
-        // Sauvegarder la commande mise à jour
         Command updatedCommand = commandRepository.save(command);
-        return CommandMapper.toDTO(updatedCommand);
+        return enrichCommandDto(CommandMapper.toDTO(updatedCommand));
     }
 
-
-    //delete a specific command
+    // Supprimer une commande
     public void deleteCommand(Long id) {
         commandRepository.deleteById(id);
     }
 
+    // Récupérer toutes les commandes d’un utilisateur
+    public List<CommandDto> getCommandsByUserId(Long userId) {
+        List<Command> commands = commandRepository.findByUserId(userId);
+        return CommandMapper.toDTOList(commands).stream()
+                .map(this::enrichCommandDto)
+                .toList();
+    }
 
-
-
-
-
+    // Méthode privée pour enrichir un CommandDto avec les données d’équipement
+    private CommandDto enrichCommandDto(CommandDto commandDto) {
+        if (commandDto.getCommandDetails() != null) {
+            commandDto.getCommandDetails().forEach(detail -> {
+                try {
+                    Equipment equipment = equipmentRestClient.getEquipmentById(detail.getEquipmentId());
+                    if (equipment != null) {
+                        detail.setEquipmentName(equipment.getName());
+                        if (equipment.getImageLinks() != null && !equipment.getImageLinks().isEmpty()) {
+                            detail.setEquipmentImage(equipment.getImageLinks().get(0));
+                        }
+                    }
+                } catch (Exception e) {
+                    detail.setEquipmentName("Unknown");
+                }
+            });
+        }
+        return commandDto;
+    }
 }

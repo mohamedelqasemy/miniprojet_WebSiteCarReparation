@@ -13,4 +13,6 @@ public class CommandDetailsDto {
     private Long equipmentId;
     private int quantity;
     private int unitPrice;
+    private String equipmentName;
+    private String equipmentImage;
 }

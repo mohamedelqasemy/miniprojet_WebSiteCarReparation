@@ -5,16 +5,17 @@ import com.ensas.commandservice.entities.CommandDetails;
 import com.ensas.commandservice.enums.EnumStatus;
 import com.ensas.commandservice.repositories.CommandDetailsRepository;
 import com.ensas.commandservice.repositories.CommandRepository;
-import com.ensas.commandservice.services.CommandService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Date;
 import java.util.List;
 
 @SpringBootApplication
+@EnableFeignClients
 public class CommandServiceApplication {
 
     public static void main(String[] args) {

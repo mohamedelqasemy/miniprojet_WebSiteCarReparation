@@ -5,90 +5,95 @@ import com.ensas.commandservice.dtos.CommandDto;
 import com.ensas.commandservice.entities.Command;
 import com.ensas.commandservice.entities.CommandDetails;
 
+
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class CommandMapper {
+public final class CommandMapper {
 
-    // Convertir une entité Command en DTO
     public static CommandDto toDTO(Command command) {
-        if (command == null) {
-            return null;
-        }
-        return new CommandDto(
-                command.getId(),
-                command.getDate(),
-                command.getTotal(),
-                command.getStatus(),
-                command.getUserId(),
-                command.getCommandDetails() != null ?
-                        command.getCommandDetails().stream().map(CommandMapper::toDTO).collect(Collectors.toList())
-                        : null
-        );
+        if (command == null) return null;
+
+        List<CommandDetailsDto> details = command.getCommandDetails() != null
+                ? command.getCommandDetails().stream()
+                .map(CommandMapper::toDTO)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList())
+                : Collections.emptyList();
+
+        return CommandDto.builder()
+                .id(command.getId())
+                .date(command.getDate())
+                .total(command.getTotal())
+                .status(command.getStatus())
+                .userId(command.getUserId())
+                .commandDetails(details)
+                .build();
     }
 
-    // Convertir un DTO en entité Command
-    public static Command toEntity(CommandDto commandDto) {
-        if (commandDto == null) {
-            return null;
-        }
-        Command command = new Command(
-                commandDto.getId(),
-                commandDto.getDate(),
-                commandDto.getTotal(),
-                commandDto.getStatus(),
-                commandDto.getUserId(),
-                null
-        );
+    public static Command toEntity(CommandDto dto) {
+        if (dto == null) return null;
 
-        if (commandDto.getCommandDetails() != null) {
-            command.setCommandDetails(commandDto.getCommandDetails().stream()
-                    .map(detailsDto -> toEntity(detailsDto, command))
-                    .collect(Collectors.toList()));
+        Command command = Command.builder()
+                .id(dto.getId())
+                .date(dto.getDate())
+                .total(dto.getTotal())
+                .status(dto.getStatus())
+                .userId(dto.getUserId())
+                .build();
+
+        if (dto.getCommandDetails() != null) {
+            List<CommandDetails> details = dto.getCommandDetails().stream()
+                    .map(detailDto -> toEntity(detailDto, command))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            command.setCommandDetails(details);
         }
 
         return command;
     }
 
-    // Convertir une entité CommandDetails en DTO
-    public static CommandDetailsDto toDTO(CommandDetails commandDetails) {
-        if (commandDetails == null) {
-            return null;
-        }
-        return new CommandDetailsDto(
-                commandDetails.getId(),
-                commandDetails.getCommand().getId(), // Utilisation de l'ID au lieu de l'objet complet
-                commandDetails.getEquipmentId(),
-                commandDetails.getQuantity(),
-                commandDetails.getUnitPrice()
-        );
+    public static CommandDetailsDto toDTO(CommandDetails details) {
+        if (details == null) return null;
+
+        return CommandDetailsDto.builder()
+                .id(details.getId())
+                .commandId(details.getCommand() != null ? details.getCommand().getId() : null)
+                .equipmentId(details.getEquipmentId())
+                .quantity(details.getQuantity())
+                .unitPrice(details.getUnitPrice())
+                .build();
     }
 
-    // Convertir un DTO en entité CommandDetails
-    public static CommandDetails toEntity(CommandDetailsDto commandDetailsDto, Command command) {
-        if (commandDetailsDto == null) {
-            return null;
-        }
-        return new CommandDetails(
-                commandDetailsDto.getId(),
-                command,
-                commandDetailsDto.getEquipmentId(),
-                commandDetailsDto.getQuantity(),
-                commandDetailsDto.getUnitPrice()
-        );
+    public static CommandDetails toEntity(CommandDetailsDto dto, Command command) {
+        if (dto == null) return null;
+
+        return CommandDetails.builder()
+                .id(dto.getId())
+                .command(command)
+                .equipmentId(dto.getEquipmentId())
+                .quantity(dto.getQuantity())
+                .unitPrice(dto.getUnitPrice())
+                .build();
     }
 
-    // Convertir une liste de Command en liste de CommandDto
-    public static List<CommandDto> toDTOList(List<Command> commandList) {
-        return commandList.stream()
+    public static List<CommandDto> toDTOList(List<Command> entities) {
+        if (entities == null || entities.isEmpty()) return Collections.emptyList();
+
+        return entities.stream()
                 .map(CommandMapper::toDTO)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
-    // Convertir une liste de CommandDto en liste de Command
-    public static List<Command> toEntityList(List<CommandDto> commandDtoList) {
-        return commandDtoList.stream()
+    public static List<Command> toEntityList(List<CommandDto> dtos) {
+        if (dtos == null || dtos.isEmpty()) return Collections.emptyList();
+
+        return dtos.stream()
                 .map(CommandMapper::toEntity)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 }
