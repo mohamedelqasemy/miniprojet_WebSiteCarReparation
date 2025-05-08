@@ -97,13 +97,16 @@ public class EquipmentService {
                 .map(EquipmentMapper::toDTO);
     }
 
-    public Page<EquipmentDto> getEquipmentPaginated(String car, String type, Double minPrice, Double maxPrice, int page, int size) {
+    public Page<EquipmentDto> getEquipmentPaginated(List<String> carList, List<String> typeList, String search, Double minPrice, Double maxPrice, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
-        Specification<Equipment> spec = Specification
-                .where(EquipmentSpecification.hasCar(car))
-                .and(EquipmentSpecification.hasType(type))
-                .and(EquipmentSpecification.priceBetween(minPrice, maxPrice));
+        Specification<Equipment> spec = Specification.where(null);
+
+        spec = spec.and(EquipmentSpecification.hasCar(carList));
+        spec = spec.and(EquipmentSpecification.hasType(typeList));
+        spec = spec.and(EquipmentSpecification.hasName(search));
+        spec = spec.and(EquipmentSpecification.priceBetween(minPrice, maxPrice));
+
 
         return equipmentRepository.findAll(spec, pageable)
                 .map(EquipmentMapper::toDTO);

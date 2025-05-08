@@ -3,16 +3,22 @@ package com.ensas.equipementservice.util;
 import com.ensas.equipementservice.entities.Equipment;
 import org.springframework.data.jpa.domain.Specification;
 
-public class EquipmentSpecification {
+import java.util.List;
 
-    public static Specification<Equipment> hasCar(String car) {
+public class EquipmentSpecification {
+    public static Specification<Equipment> hasName(String search) {
         return (root, query, builder) ->
-                car == null ? null : builder.equal(root.get("car"), car);
+                (search == null || search.isEmpty()) ? null : builder.like(builder.lower(root.get("name")), "%" + search.toLowerCase() + "%");
     }
 
-    public static Specification<Equipment> hasType(String type) {
+    public static Specification<Equipment> hasCar(List<String> cars) {
         return (root, query, builder) ->
-                type == null ? null : builder.equal(root.get("type"), type);
+                (cars == null || cars.isEmpty()) ? null : root.get("car").in(cars);
+    }
+
+    public static Specification<Equipment> hasType(List<String> types) {
+        return (root, query, builder) ->
+                (types == null || types.isEmpty()) ? null : root.get("type").in(types);
     }
 
     public static Specification<Equipment> priceBetween(Double minPrice, Double maxPrice) {
@@ -24,4 +30,3 @@ public class EquipmentSpecification {
         };
     }
 }
-

@@ -56,12 +56,13 @@ public class EquipmentRestController {
     public ResponseEntity<Page<EquipmentDto>> getAllEquipmentPaginated(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "9") int size,
-            @RequestParam(required = false) String car,
-            @RequestParam(required = false) String type,
+            @RequestParam(required = false) List<String> car,
+            @RequestParam(required = false) List<String> type,
+            @RequestParam(required = false) String name,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice
     ) {
-        Page<EquipmentDto> equipments = equipmentService.getEquipmentPaginated(car, type, minPrice, maxPrice, page, size);
+        Page<EquipmentDto> equipments = equipmentService.getEquipmentPaginated(car, type, name, minPrice, maxPrice, page, size);
         return ResponseEntity.ok(equipments);
     }
 
