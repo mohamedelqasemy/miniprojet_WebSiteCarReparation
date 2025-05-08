@@ -16,6 +16,8 @@ public class Equipment {
     private String name;
     private String description;
     private Double price;
+    private String type;
+    private String car;
     private Long quantity;
 
     @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, orphanRemoval = true)

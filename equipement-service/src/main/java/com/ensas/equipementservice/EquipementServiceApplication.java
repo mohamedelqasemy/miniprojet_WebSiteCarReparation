@@ -31,6 +31,8 @@ public class EquipementServiceApplication {
             Equipment batterie = Equipment.builder()
                     .name("Batterie 12V")
                     .description("Batterie 12V très puissante pour les véhicules utilitaires.")
+                    .type("batterie")
+                    .car("dacia")
                     .price(500.0)
                     .quantity(10L)
                     .build();
@@ -58,6 +60,8 @@ public class EquipementServiceApplication {
                     .name("Moteur V8")
                     .description("Moteur 500 chevaux, idéal pour les voitures sportives.")
                     .price(6700.0)
+                    .type("moteur")
+                    .car("dacia")
                     .quantity(5L)
                     .build();
 

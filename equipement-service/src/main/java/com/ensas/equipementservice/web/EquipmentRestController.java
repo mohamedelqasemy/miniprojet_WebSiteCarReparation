@@ -52,6 +52,19 @@ public class EquipmentRestController {
         return ResponseEntity.ok(equipment);
 
     }
+    @GetMapping("/filtered")
+    public ResponseEntity<Page<EquipmentDto>> getAllEquipmentPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "9") int size,
+            @RequestParam(required = false) String car,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice
+    ) {
+        Page<EquipmentDto> equipments = equipmentService.getEquipmentPaginated(car, type, minPrice, maxPrice, page, size);
+        return ResponseEntity.ok(equipments);
+    }
+
 
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<String> uploadImage(

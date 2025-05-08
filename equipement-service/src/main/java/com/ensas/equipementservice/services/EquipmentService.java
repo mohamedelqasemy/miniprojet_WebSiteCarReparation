@@ -7,6 +7,7 @@ import com.ensas.equipementservice.entities.ImageEquipment;
 import com.ensas.equipementservice.feign.UserFeignClient;
 import com.ensas.equipementservice.mappers.EquipmentMapper;
 import com.ensas.equipementservice.repositories.EquipmentRepository;
+import com.ensas.equipementservice.util.EquipmentSpecification;
 import feign.FeignException;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -95,6 +97,18 @@ public class EquipmentService {
                 .map(EquipmentMapper::toDTO);
     }
 
+    public Page<EquipmentDto> getEquipmentPaginated(String car, String type, Double minPrice, Double maxPrice, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Specification<Equipment> spec = Specification
+                .where(EquipmentSpecification.hasCar(car))
+                .and(EquipmentSpecification.hasType(type))
+                .and(EquipmentSpecification.priceBetween(minPrice, maxPrice));
+
+        return equipmentRepository.findAll(spec, pageable)
+                .map(EquipmentMapper::toDTO);
+    }
+
     @Transactional
     public String uploadImage(final Long id, final MultipartFile file) {
         Equipment equipment = equipmentRepository.findById(id)
@@ -116,6 +130,8 @@ public class EquipmentService {
 
         return cloudinaryResponse.getUrl();
     }
+
+
 
 
 

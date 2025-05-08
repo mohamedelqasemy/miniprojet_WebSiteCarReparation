@@ -22,7 +22,7 @@ public class CloudinaryService {
         try {
             String originalName = FilenameUtils.getBaseName(file.getOriginalFilename());
             String generatedName = FileUploadUtil.getFileName(originalName);
-            String publicId = "atlas/clients/" + generatedName;
+            String publicId = "atlas/equipements/" + generatedName;
 
             System.out.println("Uploading to public_id: " + publicId); // Debug print
 
@@ -31,7 +31,7 @@ public class CloudinaryService {
                     "use_filename", false,
                     "unique_filename", false,
                     "overwrite", true,
-                    "folder", "atlas/clients"
+                    "folder", "atlas/equipements"
             ));
 
             final String url = (String) uploadResult.get("secure_url");

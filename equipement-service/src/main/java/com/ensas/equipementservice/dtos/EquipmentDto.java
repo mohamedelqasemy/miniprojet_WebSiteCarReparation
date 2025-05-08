@@ -15,6 +15,8 @@ public class EquipmentDto {
     private String name;
     private String description;
     private Double price;
+    private String type;
+    private String car;
     private Long quantity;
     private List<String> imageLinks;
     private Double averageRating; //Moyenne des notes
