@@ -47,4 +47,21 @@ public class CloudinaryService {
         }
     }
 
+    public void deleteFileByUrl(String imageUrl) {
+        try {
+            // Extraire le publicId de l'URL
+            String publicId = extractPublicIdFromUrl(imageUrl);
+            cloudinary.uploader().destroy(publicId, Map.of());
+        } catch (Exception e) {
+            throw new RuntimeException("Échec de suppression dans Cloudinary");
+        }
+    }
+
+    private String extractPublicIdFromUrl(String url) {
+        int start = url.indexOf("/atlas/equipements/");
+        int end = url.lastIndexOf('.');
+        return url.substring(start + 1, end); // Supprime 'https://res.cloudinary.com/.../' et extension
+    }
+
+
 }

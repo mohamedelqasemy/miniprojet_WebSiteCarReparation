@@ -38,11 +38,9 @@ public class EquipementServiceApplication {
                     .build();
 
             batterie.setImages(List.of(
-                    ImageEquipment.builder().imageLink("https://www.shutterstock.com/image-photo/car-mechanic-pouring-engine-oil-600w-2450363423.jpg").equipment(batterie).build(),
-                    ImageEquipment.builder().imageLink("https://www.shutterstock.com/image-photo/car-mechanic-pouring-engine-oil-600w-2450363423.jpg").equipment(batterie).build(),
-                    ImageEquipment.builder().imageLink("https://www.shutterstock.com/image-photo/car-mechanic-pouring-engine-oil-600w-2450363423.jpg").equipment(batterie).build(),
-                    ImageEquipment.builder().imageLink("https://www.shutterstock.com/image-photo/car-mechanic-pouring-engine-oil-600w-2450363423.jpg").equipment(batterie).build(),
-                    ImageEquipment.builder().imageLink("https://www.shutterstock.com/image-photo/car-mechanic-pouring-engine-oil-600w-2450363423.jpg").equipment(batterie).build()
+                    ImageEquipment.builder().imageLink("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746713807/car-mechanic-pouring-engine-oil-600w-2450363423_tpyfr4.jpg").equipment(batterie).build(),
+                    ImageEquipment.builder().imageLink("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746713807/car-mechanic-pouring-engine-oil-600w-2450363423_tpyfr4.jpg").equipment(batterie).build(),
+                    ImageEquipment.builder().imageLink("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746713807/car-mechanic-pouring-engine-oil-600w-2450363423_tpyfr4.jpg").equipment(batterie).build()
             ));
 
             batterie.setRatings(List.of(
@@ -66,12 +64,9 @@ public class EquipementServiceApplication {
                     .build();
 
             moteur.setImages(List.of(
-                    ImageEquipment.builder().imageLink("https://www.shutterstock.com/image-photo/car-mechanic-pouring-engine-oil-600w-2450363423.jpg").equipment(moteur).build(),
-                    ImageEquipment.builder().imageLink("https://www.shutterstock.com/image-photo/car-mechanic-pouring-engine-oil-600w-2450363423.jpg").equipment(moteur).build(),
-                    ImageEquipment.builder().imageLink("https://www.shutterstock.com/image-photo/car-mechanic-pouring-engine-oil-600w-2450363423.jpg").equipment(moteur).build(),
-                    ImageEquipment.builder().imageLink("https://www.shutterstock.com/image-photo/car-mechanic-pouring-engine-oil-600w-2450363423.jpg").equipment(moteur).build(),
-                    ImageEquipment.builder().imageLink("https://www.shutterstock.com/image-photo/car-mechanic-pouring-engine-oil-600w-2450363423.jpg").equipment(moteur).build(),
-                    ImageEquipment.builder().imageLink("https://www.shutterstock.com/image-photo/car-mechanic-pouring-engine-oil-600w-2450363423.jpg").equipment(moteur).build()
+                    ImageEquipment.builder().imageLink("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746713983/Distribution_ddxk4s.png").equipment(moteur).build(),
+                    ImageEquipment.builder().imageLink("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746713983/Distribution_ddxk4s.png").equipment(moteur).build(),
+                    ImageEquipment.builder().imageLink("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746713983/Distribution_ddxk4s.png").equipment(moteur).build()
             ));
 
             moteur.setRatings(List.of(
