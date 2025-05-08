@@ -31,7 +31,7 @@ public class CloudinaryService {
                     "use_filename", false,
                     "unique_filename", false,
                     "overwrite", true,
-                    "folder", "atlas/equipements"
+                    "folder", "atlas/garages"
             ));
 
             final String url = (String) uploadResult.get("secure_url");
@@ -58,10 +58,18 @@ public class CloudinaryService {
     }
 
     private String extractPublicIdFromUrl(String url) {
-        int start = url.indexOf("/atlas/equipements/");
+
+        String folder = "atlas/garages/";
+        int start = url.indexOf(folder);
         int end = url.lastIndexOf('.');
-        return url.substring(start + 1, end); // Supprime 'https://res.cloudinary.com/.../' et extension
+
+        if (start == -1 || end == -1 || start + folder.length() >= end) {
+            throw new IllegalArgumentException("URL invalide ou format inattendu : " + url);
+        }
+
+        return url.substring(start, end); // ex : atlas/garages/mon-image
     }
+
 
 
 }
