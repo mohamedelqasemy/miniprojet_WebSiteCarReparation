@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 @Service
@@ -50,36 +51,69 @@ public class EquipmentService {
     }
     @Transactional
     public EquipmentDto updateEquipment(Long id, EquipmentDto equipmentDto) {
-        if(id == null || equipmentDto == null) {
-            throw new IllegalArgumentException("Les données de l'équipement ne peuvent pas être nulles");
+        Equipment equipement = equipmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Équipement non trouvé"));
+
+        equipement.setName(equipmentDto.getName());
+        equipement.setDescription(equipmentDto.getDescription());
+        equipement.setPrice(equipmentDto.getPrice());
+        equipement.setQuantity(equipmentDto.getQuantity());
+
+        List<String> newImageLinks = equipmentDto.getImageLinks();
+
+        if (newImageLinks != null && !newImageLinks.isEmpty()) {
+            List<ImageEquipment> currentImages = equipement.getImages();
+            List<ImageEquipment> updatedImages = new ArrayList<>();
+
+            for (int i = 0; i < Math.min(3, newImageLinks.size()); i++) {
+                String newLink = newImageLinks.get(i);
+                if (newLink != null && !newLink.isBlank()) {
+                    if (i < currentImages.size()) {
+                        String oldLink = currentImages.get(i).getImageLink();
+                        if (!oldLink.equals(newLink)) {
+                            // Supprimer ancienne image de Cloudinary
+                            cloudinaryService.deleteFileByUrl(oldLink);
+                            // Mettre à jour l'image
+                            currentImages.get(i).setImageLink(newLink);
+                        }
+                        updatedImages.add(currentImages.get(i));
+                    } else {
+                        // Nouvelle image
+                        ImageEquipment img = new ImageEquipment();
+                        img.setImageLink(newLink);
+                        img.setEquipment(equipement);
+                        updatedImages.add(img);
+                    }
+                }
+            }
+
+            equipement.getImages().clear();
+            for (ImageEquipment img : updatedImages) {
+                equipement.getImages().add(img);
+            }
         }
-        Equipment existingEquipment = equipmentRepository.findById(id)
+
+        equipement = equipmentRepository.save(equipement);
+        return EquipmentMapper.toDTO(equipement);
+    }
+
+
+    @Transactional
+    public void deleteEquipment(Long id) {
+        Equipment equipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Equipement non trouvé"));
 
-        if(equipmentDto.getDescription() != null) {
-            existingEquipment.setDescription(equipmentDto.getDescription());
+        // Supprimer les images de Cloudinary
+        if (equipment.getImages() != null) {
+            equipment.getImages().forEach(img -> {
+                cloudinaryService.deleteFileByUrl(img.getImageLink());
+            });
         }
-        if(equipmentDto.getName() != null) {
-            existingEquipment.setName(equipmentDto.getName());
-        }
-        if(equipmentDto.getPrice() != null) {
-            existingEquipment.setPrice(equipmentDto.getPrice());
-        }
-        if(equipmentDto.getQuantity() != null) {
-            existingEquipment.setQuantity(equipmentDto.getQuantity());
-        }
-//        if(equipmentDto.getImage() != null) {
-//            existingEquipment.setImage(equipmentDto.getImage());
-//        }
-        return EquipmentMapper.toDTO(existingEquipment);
+
+        // Supprimer l'équipement (et ses images avec cascade)
+        equipmentRepository.delete(equipment);
     }
 
-    public void deleteEquipment(Long id) {
-        if (!equipmentRepository.existsById(id)) {
-            throw new RuntimeException("Equipement non trouvé");
-        }
-        equipmentRepository.deleteById(id);
-    }
 
     // Vérifier si l'utilisateur existe en utilisant Feign
     public boolean isUserExists(Long userId) {
@@ -117,22 +151,28 @@ public class EquipmentService {
         Equipment equipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Équipement non trouvé"));
 
-        // 1. Upload vers Cloudinary
+        // Upload vers Cloudinary
         CloudinaryResponse cloudinaryResponse = cloudinaryService.uploadFile(file, "equipement_" + id);
 
-        // 2. Créer une nouvelle image et la lier à l’équipement
+        // Vérifier si la liste des images est initialisée
+        if (equipment.getImages() == null) {
+            equipment.setImages(new ArrayList<>());
+        }
+
+        // Créer l'image et l'associer à l'équipement
         ImageEquipment image = new ImageEquipment();
         image.setImageLink(cloudinaryResponse.getUrl());
-        image.setEquipment(equipment); // Lien bidirectionnel
+        image.setEquipment(equipment); // relation bidirectionnelle
 
-        // 3. Ajouter à la liste des images
+        // Ajouter à la liste
         equipment.getImages().add(image);
 
-        // 4. Sauvegarder l’équipement (cascade = ALL s'occupe du persist de l'image)
+        // Sauvegarder (cascade = ALL gère aussi l’image)
         equipmentRepository.save(equipment);
 
         return cloudinaryResponse.getUrl();
     }
+
 
 
 
