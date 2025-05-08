@@ -19,7 +19,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class GarageService {
     private final GarageRepository garageRepository;
-
+    private final CloudinaryService cloudinaryService;
 
     public Page<GarageDto> getAllGaragePaginated(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -45,6 +45,15 @@ public class GarageService {
         Garage existingGarage = garageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Garage not found with ID: " + id));
 
+        // Si une nouvelle image est fournie
+        if (garageDto.getImage() != null && !garageDto.getImage().isBlank()
+                && !garageDto.getImage().equals(existingGarage.getImage())) {
+
+            // Supprimer l'ancienne image de Cloudinary
+            cloudinaryService.deleteFileByUrl(existingGarage.getImage());
+        }
+
+
         existingGarage.setNom(garageDto.getNom());
         existingGarage.setAdresse(garageDto.getAdresse());
         existingGarage.setTelephone(garageDto.getTelephone());
@@ -60,6 +69,10 @@ public class GarageService {
     public void deleteGarage(Long id) {
         Garage garage = garageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Garage not found with ID: " + id));
+
+        if (garage.getImage() != null) {
+            cloudinaryService.deleteFileByUrl(garage.getImage());
+        }
         garageRepository.delete(garage);
     }
 }

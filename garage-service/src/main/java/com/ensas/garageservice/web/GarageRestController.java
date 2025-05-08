@@ -1,13 +1,16 @@
 package com.ensas.garageservice.web;
 
+import com.ensas.garageservice.dto.CloudinaryResponse;
 import com.ensas.garageservice.dto.GarageDto;
 import com.ensas.garageservice.entity.Garage;
+import com.ensas.garageservice.service.CloudinaryService;
 import com.ensas.garageservice.service.GarageService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor()
 public class GarageRestController {
     private final GarageService garageService;
+    private final CloudinaryService cloudinaryService;
 
     @GetMapping
     public ResponseEntity<Page<GarageDto>> getAllGaragesPaginated(
@@ -48,5 +52,12 @@ public class GarageRestController {
         garageService.deleteGarage(id);
         return ResponseEntity.noContent().build(); // HTTP 204 No Content
     }
+
+    @PostMapping("/upload-image")
+    public ResponseEntity<CloudinaryResponse> uploadImage(@RequestParam("image") MultipartFile file) {
+        CloudinaryResponse response = cloudinaryService.uploadFile(file, file.getOriginalFilename());
+        return ResponseEntity.ok(response);
+    }
+
 
 }
