@@ -1,7 +1,8 @@
 package com.ensas.commandservice.enums;
 
 public enum EnumStatus {
-    PENDING,
-    APPROVED,
-    REJECTED,
+    EN_ATTENTE,
+    EN_COURS,
+    LIVREE,
+    ANNULEE
 }

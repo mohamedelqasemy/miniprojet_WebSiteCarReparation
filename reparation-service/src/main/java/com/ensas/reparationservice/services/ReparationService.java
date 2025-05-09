@@ -5,6 +5,10 @@ import com.ensas.reparationservice.entities.Reparation;
 import com.ensas.reparationservice.mappers.ReparationMapper;
 import com.ensas.reparationservice.repositories.ReparationRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -82,5 +86,19 @@ public class ReparationService {
                 .dateOfCreation(new Date())
                 .servicePrice(0.0)
                 .build();
+    }
+
+    public Page<ReparationDto> getPaginatedReparations(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("dateOfCreation").descending());
+        return reparationRepository.findAll(pageable)
+                .map(reparation -> ReparationDto.builder()
+                        .id(reparation.getId())
+                        .name(reparation.getName())
+                        .description(reparation.getDescription())
+                        .type(reparation.getType())
+                        .dateOfCreation(reparation.getDateOfCreation())
+                        .servicePrice(reparation.getServicePrice())
+                        .image(reparation.getImage())
+                        .build());
     }
 }

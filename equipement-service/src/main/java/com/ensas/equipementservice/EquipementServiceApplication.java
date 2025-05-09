@@ -49,8 +49,8 @@ public class EquipementServiceApplication {
             ));
 
             batterie.setComments(List.of(
-                    Comment.builder().text("Excellent produit, je recommande.").userId(1L).equipment(batterie).build(),
-                    Comment.builder().text("Très bonne performance.").userId(2L).equipment(batterie).build()
+                    Comment.builder().text("Excellent produit, je recommande.").userId(1L).equipment(batterie).date(new Date()).build(),
+                    Comment.builder().text("Très bonne performance.").userId(2L).equipment(batterie).date(new Date()).build()
             ));
 
             // Equipment 2: Moteur

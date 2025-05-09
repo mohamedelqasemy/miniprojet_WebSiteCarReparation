@@ -3,6 +3,7 @@ package com.ensas.reparationservice.web;
 import com.ensas.reparationservice.dtos.ReparationDto;
 import com.ensas.reparationservice.services.ReparationService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,15 @@ public class ReparationRestController {
         List<ReparationDto> reparationDtoList = reparationService.getAllReparations();
         return ResponseEntity.ok(reparationDtoList);
     }
+
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<ReparationDto>> getPaginatedReparations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<ReparationDto> pageResult = reparationService.getPaginatedReparations(page, size);
+        return ResponseEntity.ok(pageResult);
+    }
+
 
     //get a specific reparation
     @GetMapping("/{id}")
