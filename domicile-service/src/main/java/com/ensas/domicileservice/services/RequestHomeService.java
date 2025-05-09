@@ -58,9 +58,6 @@ public class RequestHomeService {
         if (requestHomeDto.getUserId() != null) {
             existingRequest.setUserId(requestHomeDto.getUserId());
         }
-        if (requestHomeDto.getServiceType() != null) {
-            existingRequest.setServiceType(requestHomeDto.getServiceType());
-        }
         if (requestHomeDto.getStatus() != null) {
             existingRequest.setStatus(requestHomeDto.getStatus());
         }
@@ -84,7 +81,6 @@ public class RequestHomeService {
                 .userId(0L)
                 .user(new UserDTO())
                 .address("Not Available")
-                .serviceType("Not Available")
                 .dateDemand(new Date())
                 .status("Not Available")
                 .build();

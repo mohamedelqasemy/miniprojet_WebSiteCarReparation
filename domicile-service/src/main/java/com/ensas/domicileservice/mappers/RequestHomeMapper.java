@@ -14,7 +14,6 @@ public class RequestHomeMapper {
                 .id(requestHome.getId())
                 .userId(requestHome.getUserId())
                 .address(requestHome.getAddress())
-                .serviceType(requestHome.getServiceType())
                 .dateDemand(requestHome.getDateDemand())
                 .status(requestHome.getStatus())
                 .build();
@@ -27,7 +26,6 @@ public class RequestHomeMapper {
                 .id(requestHomeDto.getId())
                 .userId(requestHomeDto.getUserId())
                 .address(requestHomeDto.getAddress())
-                .serviceType(requestHomeDto.getServiceType())
                 .dateDemand(requestHomeDto.getDateDemand())
                 .status(requestHomeDto.getStatus())
                 .build();

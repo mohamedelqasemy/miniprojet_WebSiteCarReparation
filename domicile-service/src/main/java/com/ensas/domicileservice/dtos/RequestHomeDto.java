@@ -17,7 +17,6 @@ public class RequestHomeDto {
     private Long id;
     private Long userId;
     private UserDTO user;
-    private String serviceType;
     private String address;
     private Date dateDemand;
     private String status;

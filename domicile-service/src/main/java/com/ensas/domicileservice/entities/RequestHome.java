@@ -19,8 +19,8 @@ public class RequestHome {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String nom;
     private Long userId;
-    private String serviceType;
     private String address;
     private Date dateDemand;
     private String status;

@@ -18,9 +18,11 @@ import java.util.List;
 public class ReparationService {
     
     private final ReparationRepository reparationRepository;
+    private final CloudinaryService cloudinaryService;
 
-    public ReparationService(ReparationRepository reparationRepository) {
+    public ReparationService(ReparationRepository reparationRepository, CloudinaryService cloudinaryService) {
         this.reparationRepository = reparationRepository;
+        this.cloudinaryService = cloudinaryService;
     }
     
     public List<ReparationDto> getAllReparations(){
@@ -41,42 +43,44 @@ public class ReparationService {
     }
 
     @Transactional
-    public ReparationDto updateReparation(Long id,ReparationDto reparationDto) {
-        if (reparationDto == null || id == null) {
-            throw new IllegalArgumentException("Les données de la Reparation ne peuvent pas être nulles");
+    public ReparationDto updateReparation(Long id, ReparationDto reparationDto) {
+        if (reparationDto == null || id == null) throw new IllegalArgumentException("Reparation invalide");
+
+        Reparation existing = reparationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reparation non trouvée"));
+
+        // S’il y a une nouvelle image → supprimer l’ancienne et mettre à jour
+        if (reparationDto.getImage() != null && !reparationDto.getImage().equals(existing.getImage())) {
+            cloudinaryService.deleteFileByUrl(existing.getImage());
+            existing.setImage(reparationDto.getImage());
         }
 
-        Reparation existingReparation = reparationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reparation non trouvé"));
+        // Mise à jour des autres champs
+        if (reparationDto.getName() != null) existing.setName(reparationDto.getName());
+        if (reparationDto.getType() != null) existing.setType(reparationDto.getType());
+        if (reparationDto.getDescription() != null) existing.setDescription(reparationDto.getDescription());
+        if (reparationDto.getDateOfCreation() != null) existing.setDateOfCreation(reparationDto.getDateOfCreation());
+        if (reparationDto.getServicePrice() != null) existing.setServicePrice(reparationDto.getServicePrice());
 
-        if (reparationDto.getName() != null) {
-            existingReparation.setName(reparationDto.getName());
-        }
-        if (reparationDto.getType() != null) {
-            existingReparation.setType(reparationDto.getType());
-        }
-        if (reparationDto.getDateOfCreation() != null) {
-            existingReparation.setDateOfCreation(reparationDto.getDateOfCreation());
-        }
-        if (reparationDto.getDescription() != null) {
-            existingReparation.setDescription(reparationDto.getDescription());
-        }
-        if (reparationDto.getServicePrice() != null) {
-            existingReparation.setServicePrice(reparationDto.getServicePrice());
-        }
-        if (reparationDto.getImage() != null) {
-            existingReparation.setImage(reparationDto.getImage());
-        }
+        // ✅ Enregistrer les modifications dans la base
+        reparationRepository.save(existing);
 
-        return ReparationMapper.toReparationDto(existingReparation);
+        return ReparationMapper.toReparationDto(existing);
     }
-    
-    public void deleteReparation(Long id){
-        if(!reparationRepository.existsById(id))
-            throw new RuntimeException("Reparation non trouvé");
+
+
+
+    public void deleteReparation(Long id) {
+        Reparation reparation = reparationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Réparation non trouvée"));
+
+        if (reparation.getImage() != null) {
+            cloudinaryService.deleteFileByUrl(reparation.getImage());
+        }
+
         reparationRepository.deleteById(id);
     }
-    
+
     public ReparationDto defaultReparationDto(){
         return ReparationDto.builder()
                 .id(0L)
