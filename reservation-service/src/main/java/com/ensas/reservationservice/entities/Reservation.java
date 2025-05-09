@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -22,5 +23,6 @@ public class Reservation {
     private EnumStatus status;
     private Long carId;
     private Long userId;
-    private Long serviceId;
+    @ElementCollection
+    private List<Long> serviceId;
 }

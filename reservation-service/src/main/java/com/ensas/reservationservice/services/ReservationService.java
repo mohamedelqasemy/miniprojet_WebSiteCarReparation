@@ -2,12 +2,15 @@ package com.ensas.reservationservice.services;
 
 import com.ensas.reservationservice.Repositories.ReservationRepository;
 import com.ensas.reservationservice.dtos.ReservationDto;
+import com.ensas.reservationservice.dtos.ReservationRequest;
 import com.ensas.reservationservice.dtos.ReservationResponseDto;
 import com.ensas.reservationservice.entities.Reservation;
 import com.ensas.reservationservice.enums.EnumStatus;
+import com.ensas.reservationservice.feign.CarRestClient;
 import com.ensas.reservationservice.feign.ServiceRestClient;
 import com.ensas.reservationservice.feign.UserRestClient;
 import com.ensas.reservationservice.mappers.ReservationMapper;
+import com.ensas.reservationservice.model.CarDto;
 import com.ensas.reservationservice.model.Reparation;
 import com.ensas.reservationservice.model.User;
 import feign.FeignException;
@@ -19,8 +22,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -29,6 +35,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final UserRestClient userRestClient;
     private final ServiceRestClient serviceRestClient;
+    private final CarRestClient carRestClient;
 
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
@@ -38,27 +45,41 @@ public class ReservationService {
         return reservationRepository.findById(id);
     }
 
-    public Reservation createReservation(ReservationDto reservationDto) {
+    public Reservation createReservation(ReservationRequest reservation) {
         // Récupération sécurisée des entités liées
-        User user = getUserSafe(reservationDto.getUserId());
-        Reparation service = getServiceSafe(reservationDto.getServiceId());
+        User user = getUserSafe(reservation.getUserId());
+        List<Reparation> services = new ArrayList<>();
+        for (Long id : reservation.getServiceId()) {
+            services.add(getServiceSafe(id));
+        }
+
 
         Reservation newReservation = new Reservation();
-        newReservation.setDate(reservationDto.getDate());
+        newReservation.setDate(reservation.getDate());
         newReservation.setStatus(EnumStatus.Pending);
-        newReservation.setUserId(reservationDto.getUserId());
-        newReservation.setServiceId(reservationDto.getServiceId());
-        newReservation.setCarId(reservationDto.getCarId());
+        newReservation.setUserId(reservation.getUserId());
+        newReservation.setServiceId(reservation.getServiceId());
+
+        CarDto carDto = CarDto.builder()
+                .brand(reservation.getBrand())
+                .model(reservation.getModel())
+                .image("")
+                .productionYear(new Date())
+                .licensePlate("")
+                .userId(user.getId())
+                .build();
+
+        CarDto newCar= carRestClient.createCar(carDto);
+        newReservation.setCarId(newCar.getId());
 
         // Logs si des valeurs par défaut sont utilisées
-        if ("Default".equals(user.getFirstname())) {
-            log.warn("Création avec utilisateur par défaut (ID : {})", reservationDto.getUserId());
-        }
-
-        if ("Service inconnu".equals(service.getName())) {
-            log.warn("Création avec service par défaut (ID : {})", reservationDto.getServiceId());
-        }
-
+//        if ("Default".equals(user.getFirstname())) {
+//            log.warn("Création avec utilisateur par défaut (ID : {})", reservationDto.getUserId());
+//        }
+//
+//        if ("Service inconnu".equals(service.getName())) {
+//            log.warn("Création avec service par défaut (ID : {})", reservationDto.getServiceId());
+//        }
         return reservationRepository.save(newReservation);
     }
 
@@ -87,10 +108,14 @@ public class ReservationService {
 
         return reservationPage.map(reservation -> {
             User user = userRestClient.getUserById(reservation.getUserId());
-            Reparation service = serviceRestClient.getServiceById(reservation.getServiceId());
-            return ReservationMapper.mapToDto(reservation, user, service);
+            List<Reparation> services = reservation.getServiceId().stream()
+                    .map(serviceRestClient::getServiceById)
+                    .collect(Collectors.toList());
+
+            return ReservationMapper.mapToDtoN(reservation, user, services);
         });
     }
+
 
     // ====================
     // Méthodes privées de sécurisation

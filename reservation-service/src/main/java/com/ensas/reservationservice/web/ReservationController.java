@@ -1,6 +1,7 @@
 package com.ensas.reservationservice.web;
 
 import com.ensas.reservationservice.dtos.ReservationDto;
+import com.ensas.reservationservice.dtos.ReservationRequest;
 import com.ensas.reservationservice.dtos.ReservationResponseDto;
 import com.ensas.reservationservice.entities.Reservation;
 import com.ensas.reservationservice.services.ReservationService;
@@ -19,8 +20,8 @@ public class ReservationController {
 
     //new reservation
     @PostMapping
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDto reservationDto) {
-        Reservation reservation = reservationService.createReservation(reservationDto);
+    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest reservationRequest) {
+        Reservation reservation = reservationService.createReservation(reservationRequest);
         return ResponseEntity.ok(reservation);
     }
 
