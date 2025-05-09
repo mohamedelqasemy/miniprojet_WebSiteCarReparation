@@ -27,13 +27,13 @@ public class CommandServiceApplication {
             List<Command> commands = List.of(
                     Command.builder()
                             .date(new Date())
-                            .status(EnumStatus.PENDING)
+                            .status(EnumStatus.EN_ATTENTE)
                             .userId(1L)
                             .total(900)
                             .build(),
                     Command.builder()
                             .date(new Date())
-                            .status(EnumStatus.APPROVED)
+                            .status(EnumStatus.EN_COURS)
                             .userId(2L)
                             .total(1500)
                             .build()
@@ -44,7 +44,7 @@ public class CommandServiceApplication {
             List<CommandDetails> commandDetails = List.of(
                     new CommandDetails(null, commands.get(0), 1L, 2, 450), // 2 équipements à 450 chacun
                     new CommandDetails(null, commands.get(0), 2L, 1, 300), // 1 équipement à 300
-                    new CommandDetails(null, commands.get(1), 3L, 3, 500)  // 3 équipements à 500 chacun
+                    new CommandDetails(null, commands.get(1), 1L, 3, 500)  // 3 équipements à 500 chacun
             );
 
             commandDetailsRepository.saveAll(commandDetails);
