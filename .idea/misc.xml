@@ -22,6 +22,12 @@
         <option value="$PROJECT_DIR$/garage-service/pom.xml" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/aggregator-service/pom.xml" />
+        <option value="$PROJECT_DIR$/agregateur/pom.xml" />
+      </set>
+    </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_23" default="true" project-jdk-name="23" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
