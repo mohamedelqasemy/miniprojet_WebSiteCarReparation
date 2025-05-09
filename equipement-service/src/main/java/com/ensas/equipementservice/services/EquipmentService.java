@@ -36,23 +36,23 @@ public class EquipmentService {
     public EquipmentDto createEquipment(EquipmentDto equipmentDto) {
         Equipment equipment = EquipmentMapper.toEntity(equipmentDto);
         equipment = equipmentRepository.save(equipment);
-        return EquipmentMapper.toDTO(equipment);
+        return EquipmentMapper.toDTO(equipment,userFeignClient);
     }
 
     public List<EquipmentDto> getAllEquipment() {
         List<Equipment> equipments = equipmentRepository.findAll();
-        return EquipmentMapper.toDTOList(equipments);
+        return EquipmentMapper.toDTOList(equipments,userFeignClient);
     }
 
     public EquipmentDto getEquipmentById(Long id) {
         return equipmentRepository.findById(id)
-                .map(EquipmentMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Equipement non trouvé"));
+                .map(equipment -> EquipmentMapper.toDTO(equipment, userFeignClient))
+                .orElseThrow(() -> new NotFoundException("Equipement non trouvé"));
     }
     @Transactional
     public EquipmentDto updateEquipment(Long id, EquipmentDto equipmentDto) {
         Equipment equipement = equipmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Équipement non trouvé"));
+                .orElseThrow(() -> new NotFoundException("Équipement non trouvé"));
 
         equipement.setName(equipmentDto.getName());
         equipement.setDescription(equipmentDto.getDescription());
@@ -94,7 +94,7 @@ public class EquipmentService {
         }
 
         equipement = equipmentRepository.save(equipement);
-        return EquipmentMapper.toDTO(equipement);
+        return EquipmentMapper.toDTO(equipement, userFeignClient);
     }
 
 
@@ -128,7 +128,7 @@ public class EquipmentService {
     public Page<EquipmentDto> getAllEquipmentPaginated(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending()); // ou autre tri
         return equipmentRepository.findAll(pageable)
-                .map(EquipmentMapper::toDTO);
+                .map(equipment -> EquipmentMapper.toDTO(equipment, userFeignClient));
     }
 
     public Page<EquipmentDto> getEquipmentPaginated(List<String> carList, List<String> typeList, String search, Double minPrice, Double maxPrice, int page, int size) {
@@ -143,7 +143,7 @@ public class EquipmentService {
 
 
         return equipmentRepository.findAll(spec, pageable)
-                .map(EquipmentMapper::toDTO);
+                .map(equipment -> EquipmentMapper.toDTO(equipment, userFeignClient));
     }
 
     @Transactional

@@ -9,6 +9,7 @@ import com.ensas.equipementservice.repositories.CommentRepository;
 import com.ensas.equipementservice.repositories.EquipmentRepository;
 import com.ensas.equipementservice.repositories.RatingRepository;
 import com.ensas.equipementservice.services.EquipmentService;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/equipments")
@@ -37,7 +40,7 @@ public class EquipmentInteractionController {
 
         // Valider que l'équipement existe
         Equipment equipment = equipmentRepository.findById(dto.getEquipmentId())
-                .orElseThrow(() -> new RuntimeException("Equipment not found"));
+                .orElseThrow(() -> new NotFoundException("Equipment not found"));
 
         Rating rating = Rating.builder()
                 .stars(dto.getStars())
@@ -61,11 +64,12 @@ public class EquipmentInteractionController {
 
         // Valider que l'équipement existe
         Equipment equipment = equipmentRepository.findById(dto.getEquipmentId())
-                .orElseThrow(() -> new RuntimeException("Equipment not found"));
+                .orElseThrow(() -> new NotFoundException("Equipment not found"));
 
         Comment comment = Comment.builder()
                 .text(dto.getText())
                 .userId(dto.getUserId())
+                .date(new Date())
                 .equipment(equipment)
                 .build();
 

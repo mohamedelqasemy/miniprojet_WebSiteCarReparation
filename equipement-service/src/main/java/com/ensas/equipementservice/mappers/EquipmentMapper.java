@@ -1,11 +1,15 @@
 package com.ensas.equipementservice.mappers;
 
+import com.ensas.equipementservice.dtos.CommentResponseDto;
 import com.ensas.equipementservice.dtos.EquipmentDto;
 import com.ensas.equipementservice.entities.Comment;
 import com.ensas.equipementservice.entities.Equipment;
 import com.ensas.equipementservice.entities.ImageEquipment;
 
 import com.ensas.equipementservice.entities.Rating;
+import com.ensas.equipementservice.feign.UserFeignClient;
+import com.ensas.equipementservice.models.User;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
 import java.util.List;
@@ -13,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class EquipmentMapper {
 
-    public static EquipmentDto toDTO(Equipment equipment) {
+    public static EquipmentDto toDTO(Equipment equipment,UserFeignClient userFeignClient) {
         EquipmentDto dto = new EquipmentDto();
         BeanUtils.copyProperties(equipment, dto);
 
@@ -36,11 +40,20 @@ public class EquipmentMapper {
         // Comments
         if (equipment.getComments() != null) {
             dto.setComments(equipment.getComments().stream()
-                    .map(Comment::getText)
+                    .map(comment -> toCommentResponseDto(comment, userFeignClient))
                     .collect(Collectors.toList()));
         }
 
         return dto;
+    }
+    private static CommentResponseDto toCommentResponseDto(Comment comment, UserFeignClient userFeignClient) {
+        User user = userFeignClient.getUserById(comment.getUserId()).getBody();
+        return CommentResponseDto.builder()
+                .text(comment.getText())
+                .userName(user.getFirstname() + " " + user.getLastname())
+                .userImage(user.getImage())
+                .date(comment.getDate())
+                .build();
     }
 
     public static Equipment toEntity(EquipmentDto equipmentDto) {
@@ -61,9 +74,9 @@ public class EquipmentMapper {
         return equipment;
     }
 
-    public static List<EquipmentDto> toDTOList(List<Equipment> equipments) {
+    public static List<EquipmentDto> toDTOList(List<Equipment> equipments, UserFeignClient userFeignClient) {
         return equipments.stream()
-                .map(EquipmentMapper::toDTO)
+                .map(equipment -> EquipmentMapper.toDTO(equipment,userFeignClient))
                 .collect(Collectors.toList());
     }
 

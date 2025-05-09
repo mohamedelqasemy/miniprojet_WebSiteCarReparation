@@ -19,7 +19,7 @@ public class EquipmentDto {
     private String car;
     private Long quantity;
     private List<String> imageLinks;
-    private Double averageRating; //Moyenne des notes
-    private List<String> comments; //Textes des commentaires
+    private Double averageRating;
+    private List<CommentResponseDto> comments;
 
 }
