@@ -27,7 +27,7 @@ public class ReparationServiceApplication {
                     Reparation.builder()
                             .name("Service électrique")
                             .description("Répare tous les éléments liés à l'électricité du véhicule, y compris l'alternateur, la batterie et les câblages.")
-                            .type("A domicile")
+                            .type("En atelier")
                             .dateOfCreation(new Date())
                             .servicePrice(500.0)
                             .image("/images/Batterie.png")
