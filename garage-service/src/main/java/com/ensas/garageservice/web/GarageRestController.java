@@ -53,10 +53,12 @@ public class GarageRestController {
         return ResponseEntity.noContent().build(); // HTTP 204 No Content
     }
 
-    @PostMapping("/upload-image")
-    public ResponseEntity<CloudinaryResponse> uploadImage(@RequestParam("image") MultipartFile file) {
-        CloudinaryResponse response = cloudinaryService.uploadFile(file, file.getOriginalFilename());
-        return ResponseEntity.ok(response);
+    @PostMapping("/{id}/upload-image")
+    public ResponseEntity<String> uploadImage(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        String imageUrl = garageService.uploadImage(id, file);
+        return ResponseEntity.ok(imageUrl);
     }
 
 

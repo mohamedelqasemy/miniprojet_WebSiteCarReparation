@@ -69,11 +69,6 @@ public class ReparationRestController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/cloudinary/upload")
-    public CloudinaryResponse uploadToCloudinary(@RequestParam("image") MultipartFile image) {
-        return cloudinaryService.uploadFile(image, image.getOriginalFilename());
-    }
-
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<String> uploadImage(
             @PathVariable Long id,

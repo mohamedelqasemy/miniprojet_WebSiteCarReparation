@@ -65,7 +65,7 @@ public class ReparationService {
         if (reparationDto.getDateOfCreation() != null) existing.setDateOfCreation(reparationDto.getDateOfCreation());
         if (reparationDto.getServicePrice() != null) existing.setServicePrice(reparationDto.getServicePrice());
 
-        // ✅ Enregistrer les modifications dans la base
+        // Enregistrer les modifications dans la base
         reparationRepository.save(existing);
 
         return ReparationMapper.toReparationDto(existing);
