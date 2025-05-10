@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient("car-service")
 public interface CarRestClient {
-    @PostMapping("/api/cars")
+    @PostMapping("/cars")
     CarDto createCar(@RequestBody CarDto carDto);
 }
