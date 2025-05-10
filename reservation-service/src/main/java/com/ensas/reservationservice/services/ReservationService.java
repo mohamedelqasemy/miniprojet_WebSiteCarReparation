@@ -7,10 +7,12 @@ import com.ensas.reservationservice.dtos.ReservationResponseDto;
 import com.ensas.reservationservice.entities.Reservation;
 import com.ensas.reservationservice.enums.EnumStatus;
 import com.ensas.reservationservice.feign.CarRestClient;
+import com.ensas.reservationservice.feign.GarageRestClient;
 import com.ensas.reservationservice.feign.ServiceRestClient;
 import com.ensas.reservationservice.feign.UserRestClient;
 import com.ensas.reservationservice.mappers.ReservationMapper;
 import com.ensas.reservationservice.model.CarDto;
+import com.ensas.reservationservice.model.GarageDto;
 import com.ensas.reservationservice.model.Reparation;
 import com.ensas.reservationservice.model.User;
 import feign.FeignException;
@@ -36,6 +38,7 @@ public class ReservationService {
     private final UserRestClient userRestClient;
     private final ServiceRestClient serviceRestClient;
     private final CarRestClient carRestClient;
+    private final GarageRestClient garageRestClient;
 
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
@@ -57,6 +60,7 @@ public class ReservationService {
         Reservation newReservation = new Reservation();
         newReservation.setDate(reservation.getDate());
         newReservation.setStatus(EnumStatus.Pending);
+        newReservation.setGarageId(reservation.getGarageId());
         newReservation.setUserId(reservation.getUserId());
         newReservation.setServiceId(reservation.getServiceId());
 
@@ -71,15 +75,6 @@ public class ReservationService {
 
         CarDto newCar= carRestClient.createCar(carDto);
         newReservation.setCarId(newCar.getId());
-
-        // Logs si des valeurs par défaut sont utilisées
-//        if ("Default".equals(user.getFirstname())) {
-//            log.warn("Création avec utilisateur par défaut (ID : {})", reservationDto.getUserId());
-//        }
-//
-//        if ("Service inconnu".equals(service.getName())) {
-//            log.warn("Création avec service par défaut (ID : {})", reservationDto.getServiceId());
-//        }
         return reservationRepository.save(newReservation);
     }
 
@@ -107,12 +102,13 @@ public class ReservationService {
         Page<Reservation> reservationPage = reservationRepository.findAll(pageable);
 
         return reservationPage.map(reservation -> {
+            GarageDto garage = garageRestClient.getGarageById(reservation.getGarageId());
             User user = userRestClient.getUserById(reservation.getUserId());
             List<Reparation> services = reservation.getServiceId().stream()
                     .map(serviceRestClient::getServiceById)
                     .collect(Collectors.toList());
 
-            return ReservationMapper.mapToDtoN(reservation, user, services);
+            return ReservationMapper.mapToDtoN(reservation, user, services, garage);
         });
     }
 

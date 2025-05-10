@@ -1,17 +1,16 @@
-package com.ensas.domicileservice.clients;
+package com.ensas.domicileservice.feign;
 
-import com.ensas.domicileservice.dtos.UserDTO;
+import com.ensas.domicileservice.models.User;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.List;
-
-@FeignClient(name = "user-service")
+@FeignClient("user-service")
 public interface UserRestClient {
     @GetMapping("/users/{id}")
-    UserDTO findUserById(@PathVariable("id") Long id);
+    User getUserById(@PathVariable Long id);
 
     @GetMapping("/users")
-    List<UserDTO> findAllUsers();
+    PagedModel<User> getAllUsers();
 }

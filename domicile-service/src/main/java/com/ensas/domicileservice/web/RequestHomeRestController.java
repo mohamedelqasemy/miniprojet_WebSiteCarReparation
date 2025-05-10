@@ -1,8 +1,13 @@
 package com.ensas.domicileservice.web;
 
-import com.ensas.domicileservice.clients.UserRestClient;
 import com.ensas.domicileservice.dtos.RequestHomeDto;
-import com.ensas.domicileservice.dtos.UserDTO;
+import com.ensas.domicileservice.dtos.RequestHomeRequest;
+import com.ensas.domicileservice.dtos.RequestHomeResponse;
+import com.ensas.domicileservice.entities.RequestHome;
+import com.ensas.domicileservice.feign.UserRestClient;
+import com.ensas.domicileservice.mappers.UserMapper;
+import com.ensas.domicileservice.models.User;
+import com.ensas.domicileservice.models.UserDto;
 import com.ensas.domicileservice.services.RequestHomeService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,8 +26,8 @@ public class RequestHomeRestController {
 
     //create a car
     @PostMapping
-    public ResponseEntity<RequestHomeDto> createRequestHome(@RequestBody RequestHomeDto requestHomeDto) {
-        RequestHomeDto request=requestHomeService.createRequestHome(requestHomeDto);
+    public ResponseEntity<RequestHome> createRequestHome(@RequestBody RequestHomeRequest requestHomeRequest) {
+        RequestHome request=requestHomeService.createRequestHome(requestHomeRequest);
         return ResponseEntity.ok(request);
     }
 
@@ -31,8 +36,8 @@ public class RequestHomeRestController {
     public ResponseEntity<List<RequestHomeDto>> getAllRequestsHome() {
         List<RequestHomeDto> requestHomeDtoList = requestHomeService.getAllRequestHome();
         requestHomeDtoList.forEach( home-> {
-            UserDTO user = userRestClient.findUserById(home.getUserId());
-            home.setUser(user);
+            User user = userRestClient.getUserById(home.getUserId());
+            home.setUser(UserMapper.toDTO(user));
 
         });
         return ResponseEntity.ok(requestHomeDtoList);
@@ -42,8 +47,8 @@ public class RequestHomeRestController {
     @GetMapping("/{id}")
     public ResponseEntity<RequestHomeDto> getRequestHomeById(@PathVariable("id") Long id) {
         RequestHomeDto requestHomeDto = requestHomeService.getRequestHomeById(id);
-        UserDTO user = userRestClient.findUserById(requestHomeDto.getUserId());
-        requestHomeDto.setUser(user);
+        User user = userRestClient.getUserById(requestHomeDto.getUserId());
+        requestHomeDto.setUser(UserMapper.toDTO(user));
 
         return ResponseEntity.ok(requestHomeDto);
     }
@@ -64,11 +69,11 @@ public class RequestHomeRestController {
 
 
     @GetMapping("/paginated")
-    public ResponseEntity<Page<RequestHomeDto>> getAllRequestPaginated(
+    public ResponseEntity<Page<RequestHomeResponse>> getAllRequestPaginated(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
-        Page<RequestHomeDto> requests = requestHomeService.getAllRequestPaginated(page, size);
+        Page<RequestHomeResponse> requests = requestHomeService.getAllRequestPaginated(page, size);
         return ResponseEntity.ok(requests);
     }
 }

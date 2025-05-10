@@ -14,6 +14,7 @@ public class ReservationDto {
     private Date date;
     private EnumStatus status;
     private Long carId;
+    private Long garageId;
     private Long userId;
     private Long serviceId;
 }

@@ -1,9 +1,7 @@
 package com.ensas.domicileservice.dtos;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.ensas.domicileservice.enums.EnumStatus;
+import com.ensas.domicileservice.models.UserDto;
 import lombok.*;
 
 import java.util.Date;
@@ -16,8 +14,8 @@ import java.util.Date;
 public class RequestHomeDto {
     private Long id;
     private Long userId;
-    private UserDTO user;
+    private UserDto user;
     private String address;
     private Date dateDemand;
-    private String status;
+    private EnumStatus status;
 }
