@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -77,10 +78,13 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new RuntimeException("Utilisateur non trouvé");
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
+
+        if (user.getImage() != null) {
+            cloudinaryService.deleteFileByUrl(user.getImage());
         }
-        userRepository.deleteById(id);
+        userRepository.delete(user);
     }
 
 
@@ -97,14 +101,20 @@ public class UserService {
 
     @Transactional
     public String uploadImage(final Long id, final MultipartFile file) {
-        final User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("user not found"));
-        FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
-        final String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
-        final CloudinaryResponse response = cloudinaryService.uploadFile(file, fileName);
-        user.setImage(response.getUrl());
-        user.setPublicId(response.getPublicId());
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User non trouvée"));
+
+        // Supprimer l'ancienne image si elle existe
+        if (user.getImage() != null && !user.getImage().isEmpty()) {
+            cloudinaryService.deleteFileByUrl(user.getImage());
+        }
+
+        // Upload de la nouvelle image
+        CloudinaryResponse cloudinaryResponse = cloudinaryService.uploadFile(file, "user_" + id);
+        user.setImage(cloudinaryResponse.getUrl());
+
         userRepository.save(user);
-        return response.getUrl();
+        return cloudinaryResponse.getUrl();
     }
+
 }

@@ -48,4 +48,29 @@ public class CloudinaryService {
         }
     }
 
+    public void deleteFileByUrl(String imageUrl) {
+        try {
+            // Extraire le publicId de l'URL
+            String publicId = extractPublicIdFromUrl(imageUrl);
+            cloudinary.uploader().destroy(publicId, Map.of());
+        } catch (Exception e) {
+            throw new RuntimeException("Échec de suppression dans Cloudinary");
+        }
+    }
+
+    private String extractPublicIdFromUrl(String url) {
+
+        String folder = "atlas/clients/";
+        int start = url.indexOf(folder);
+        int end = url.lastIndexOf('.');
+
+        if (start == -1 || end == -1 || start + folder.length() >= end) {
+            throw new IllegalArgumentException("URL invalide ou format inattendu : " + url);
+        }
+        return url.substring(start, end); // ex : atlas/garages/mon-image
+    }
+
+
+
+
 }

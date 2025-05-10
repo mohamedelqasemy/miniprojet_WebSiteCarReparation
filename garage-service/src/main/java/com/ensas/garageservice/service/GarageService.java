@@ -90,7 +90,7 @@ public class GarageService {
         }
 
         // Upload de la nouvelle image
-        CloudinaryResponse cloudinaryResponse = cloudinaryService.uploadFile(file, "reparation_" + id);
+        CloudinaryResponse cloudinaryResponse = cloudinaryService.uploadFile(file, "garage_" + id);
         garage.setImage(cloudinaryResponse.getUrl());
 
         garageRepository.save(garage);

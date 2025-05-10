@@ -68,10 +68,17 @@ public class UserRestController {
     }
 
 
-    @PostMapping("/image/{id}")
-    public ResponseEntity<?> uploadImage(@PathVariable final Long id, @RequestPart final MultipartFile file) {
-        String url = userService.uploadImage(id, file);
-        return ResponseEntity.ok(url);
+//    @PostMapping("/image/{id}")
+//    public ResponseEntity<?> uploadImage(@PathVariable final Long id, @RequestPart final MultipartFile file) {
+//        String url = userService.uploadImage(id, file);
+//        return ResponseEntity.ok(url);
+//    }
+    @PostMapping("/{id}/upload-image")
+    public ResponseEntity<String> uploadImage(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        String imageUrl = userService.uploadImage(id, file);
+        return ResponseEntity.ok(imageUrl);
     }
 }
 
