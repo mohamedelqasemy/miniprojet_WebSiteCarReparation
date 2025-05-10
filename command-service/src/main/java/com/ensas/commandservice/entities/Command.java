@@ -4,6 +4,7 @@ import com.ensas.commandservice.enums.EnumStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,5 +25,5 @@ public class Command {
     private Long userId;
 
     @OneToMany(mappedBy = "command", cascade = CascadeType.ALL)
-    private List<CommandDetails> commandDetails;
+    private List<CommandDetails> commandDetails= new ArrayList<>();
 }

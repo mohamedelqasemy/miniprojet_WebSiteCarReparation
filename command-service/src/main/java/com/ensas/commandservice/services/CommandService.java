@@ -2,6 +2,7 @@ package com.ensas.commandservice.services;
 
 import com.ensas.commandservice.dtos.CommandDto;
 import com.ensas.commandservice.entities.Command;
+import com.ensas.commandservice.entities.CommandDetails;
 import com.ensas.commandservice.feign.EquipmentRestClient;
 import com.ensas.commandservice.mappers.CommandMapper;
 import com.ensas.commandservice.models.Equipment;
@@ -23,9 +24,23 @@ public class CommandService {
 
     // Créer une commande
     public CommandDto createCommand(CommandDto commandDto) {
+        // Convert DTO to entity
         Command newCommand = CommandMapper.toEntity(commandDto);
+
+        // Définir la date de création
         newCommand.setDate(new Date());
+
+        // Associer chaque CommandDetail à la commande AVANT sauvegarde
+        if (newCommand.getCommandDetails() != null) {
+            for (CommandDetails detail : newCommand.getCommandDetails()) {
+                detail.setCommand(newCommand);
+            }
+        }
+
+        // Sauvegarde de la commande avec ses détails (si CascadeType.ALL est bien configuré)
         Command savedCommand = commandRepository.save(newCommand);
+
+        // Retourner le DTO enrichi
         return enrichCommandDto(CommandMapper.toDTO(savedCommand));
     }
 
