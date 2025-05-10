@@ -1,5 +1,6 @@
 package com.ensas.reparationservice.services;
 
+import com.ensas.reparationservice.dtos.CloudinaryResponse;
 import com.ensas.reparationservice.dtos.ReparationDto;
 import com.ensas.reparationservice.entities.Reparation;
 import com.ensas.reparationservice.mappers.ReparationMapper;
@@ -10,7 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -70,16 +73,18 @@ public class ReparationService {
 
 
 
+    @Transactional
     public void deleteReparation(Long id) {
         Reparation reparation = reparationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Réparation non trouvée"));
 
-        if (reparation.getImage() != null) {
+        if (reparation.getImage() != null && !reparation.getImage().isEmpty()) {
             cloudinaryService.deleteFileByUrl(reparation.getImage());
         }
 
-        reparationRepository.deleteById(id);
+        reparationRepository.delete(reparation);
     }
+
 
     public ReparationDto defaultReparationDto(){
         return ReparationDto.builder()
@@ -105,4 +110,23 @@ public class ReparationService {
                         .image(reparation.getImage())
                         .build());
     }
+
+    @Transactional
+    public String uploadImage(final Long id, final MultipartFile file) {
+        Reparation reparation = reparationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reparation non trouvée"));
+
+        // Supprimer l'ancienne image si elle existe
+        if (reparation.getImage() != null && !reparation.getImage().isEmpty()) {
+            cloudinaryService.deleteFileByUrl(reparation.getImage());
+        }
+
+        // Upload de la nouvelle image
+        CloudinaryResponse cloudinaryResponse = cloudinaryService.uploadFile(file, "reparation_" + id);
+        reparation.setImage(cloudinaryResponse.getUrl());
+
+        reparationRepository.save(reparation);
+        return cloudinaryResponse.getUrl();
+    }
+
 }

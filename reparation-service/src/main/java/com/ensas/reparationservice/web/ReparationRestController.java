@@ -74,23 +74,12 @@ public class ReparationRestController {
         return cloudinaryService.uploadFile(image, image.getOriginalFilename());
     }
 
-    @Transactional
-    @PutMapping("/{id}/image")
-    public ReparationDto updateReparationImage(@PathVariable("id") Long id, String imageUrl) {
-        Reparation existing = reparationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Réparation non trouvée"));
-
-        // Supprimer l’ancienne image si elle existe
-        if (existing.getImage() != null) {
-            cloudinaryService.deleteFileByUrl(existing.getImage());
-        }
-
-        // Mettre à jour avec la nouvelle image
-        existing.setImage(imageUrl);
-        reparationRepository.save(existing);
-
-        return ReparationMapper.toReparationDto(existing);
+    @PostMapping("/{id}/upload-image")
+    public ResponseEntity<String> uploadImage(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        String imageUrl = reparationService.uploadImage(id, file);
+        return ResponseEntity.ok(imageUrl);
     }
-
 
 }
