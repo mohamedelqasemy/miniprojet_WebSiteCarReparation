@@ -14,14 +14,9 @@ public class ReservationResponseDto {
     private Long id;
     private String date;
     private EnumStatus status;
+    private Long carId;
+    private Long garageId;
 
     private List<ServiceDto> services;
-
-    //to be deleted after
     private String client;
-    private String adresse;
-    private String name; // nom du service et placer pour cette reservation
-    private Double prix;
-    private String typeService;
-    private String image;
 }

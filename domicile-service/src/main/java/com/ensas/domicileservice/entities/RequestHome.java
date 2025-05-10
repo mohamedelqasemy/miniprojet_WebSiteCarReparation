@@ -1,13 +1,11 @@
 package com.ensas.domicileservice.entities;
 
-import com.ensas.domicileservice.dtos.UserDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.ensas.domicileservice.enums.EnumStatus;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -19,9 +17,11 @@ public class RequestHome {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nom;
     private Long userId;
+    private Long carId;
+    @ElementCollection
+    private List<Long> serviceId;
     private String address;
     private Date dateDemand;
-    private String status;
+    private EnumStatus status;
 }

@@ -23,6 +23,7 @@ public class Reservation {
     private EnumStatus status;
     private Long carId;
     private Long userId;
+    private Long GarageId;
     @ElementCollection
     private List<Long> serviceId;
 }

@@ -57,6 +57,7 @@ public class ReservationService {
         Reservation newReservation = new Reservation();
         newReservation.setDate(reservation.getDate());
         newReservation.setStatus(EnumStatus.Pending);
+        newReservation.setGarageId(reservation.getGarageId());
         newReservation.setUserId(reservation.getUserId());
         newReservation.setServiceId(reservation.getServiceId());
 
@@ -71,15 +72,6 @@ public class ReservationService {
 
         CarDto newCar= carRestClient.createCar(carDto);
         newReservation.setCarId(newCar.getId());
-
-        // Logs si des valeurs par défaut sont utilisées
-//        if ("Default".equals(user.getFirstname())) {
-//            log.warn("Création avec utilisateur par défaut (ID : {})", reservationDto.getUserId());
-//        }
-//
-//        if ("Service inconnu".equals(service.getName())) {
-//            log.warn("Création avec service par défaut (ID : {})", reservationDto.getServiceId());
-//        }
         return reservationRepository.save(newReservation);
     }
 
