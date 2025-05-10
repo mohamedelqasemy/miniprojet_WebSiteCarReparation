@@ -1,6 +1,7 @@
 package com.ensas.reservationservice.dtos;
 
 import com.ensas.reservationservice.enums.EnumStatus;
+import com.ensas.reservationservice.model.GarageDto;
 import com.ensas.reservationservice.model.ServiceDto;
 import lombok.*;
 
@@ -16,6 +17,7 @@ public class ReservationResponseDto {
     private EnumStatus status;
     private Long carId;
     private Long garageId;
+    private GarageDto garage;
 
     private List<ServiceDto> services;
     private String client;
