@@ -24,7 +24,7 @@ public class GarageRestController {
     @GetMapping
     public ResponseEntity<Page<GarageDto>> getAllGaragesPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int size
+            @RequestParam(defaultValue = "5") int size
     ) {
         Page<GarageDto> requests = garageService.getAllGaragePaginated(page, size);
         return ResponseEntity.ok(requests);
