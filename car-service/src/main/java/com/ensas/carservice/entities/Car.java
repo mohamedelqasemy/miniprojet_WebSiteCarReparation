@@ -16,6 +16,7 @@ public class Car {
     private String brand;
     private String model;
     private String image;
-    private Date productionYear;
+    private Float kilometers;
+    private String motorisation;
     private Long userId;
 }

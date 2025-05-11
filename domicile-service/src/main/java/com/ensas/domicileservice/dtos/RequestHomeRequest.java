@@ -17,6 +17,7 @@ public class RequestHomeRequest {
     private String model;
     private String motorisation;
     private Float kilometers;
+    private String licensePlate;
     private String address;
     private Long userId;
     private List<Long> serviceId;

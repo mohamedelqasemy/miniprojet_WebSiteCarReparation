@@ -14,7 +14,8 @@ public class CarDto {
     private String brand;
     private String model;
     private String image;
-    private Date productionYear;
+    private Float kilometers;
+    private String motorisation;
     private Long userId;
     private User user;
 }

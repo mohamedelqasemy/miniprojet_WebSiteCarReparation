@@ -68,8 +68,9 @@ public class ReservationService {
                 .brand(reservation.getBrand())
                 .model(reservation.getModel())
                 .image("")
-                .productionYear(new Date())
-                .licensePlate("")
+                .kilometers(reservation.getKilometers())
+                .motorisation(reservation.getMotorisation())
+                .licensePlate(reservation.getLicensePlate())
                 .userId(user.getId())
                 .build();
 

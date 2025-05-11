@@ -17,6 +17,7 @@ public class ReservationRequest {
     private String model;
     private String motorisation;
     private Float kilometers;
+    private String licensePlate;
     private Long garageId;
     private Long userId;
     private List<Long> serviceId;

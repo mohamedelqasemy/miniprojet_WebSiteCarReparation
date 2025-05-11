@@ -61,8 +61,11 @@ public class CarService {
         if (carDto.getImage() != null) {
             existingCar.setImage(carDto.getImage());
         }
-        if (carDto.getProductionYear() != null) {
-            existingCar.setProductionYear(carDto.getProductionYear());
+        if(carDto.getKilometers() != null){
+            existingCar.setKilometers(carDto.getKilometers());
+        }
+        if(carDto.getMotorisation() != null){
+            existingCar.setMotorisation(carDto.getMotorisation());
         }
 
         return CarMapper.toCarDto(existingCar);
@@ -81,7 +84,8 @@ public class CarService {
                 .brand("Not Available")
                 .model("Not Available")
                 .image("Not Available")
-                .productionYear(new Date())
+                .motorisation("Not Available")
+                .kilometers(0F)
                 .licensePlate("Not Available")
                 .userId(0L)
                 .build();

@@ -17,7 +17,8 @@ public class CarMapper {
                 .brand(car.getBrand())
                 .model(car.getModel())
                 .image(car.getImage())
-                .productionYear(car.getProductionYear())
+                .kilometers(car.getKilometers())
+                .motorisation(car.getMotorisation())
                 .userId(car.getUserId())
                 .build();
     }
@@ -31,7 +32,8 @@ public class CarMapper {
                 .brand(carDto.getBrand())
                 .model(carDto.getModel())
                 .image(carDto.getImage())
-                .productionYear(carDto.getProductionYear())
+                .kilometers(carDto.getKilometers())
+                .motorisation(carDto.getMotorisation())
                 .userId(carDto.getUserId())
                 .build();
     }
