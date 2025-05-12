@@ -111,6 +111,36 @@ public class ReparationService {
                         .build());
     }
 
+    public Page<ReparationDto> getFilterdPaginatedReparations(int page, int size, String typeService) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Reparation> pageResult;
+
+        if (typeService != null && !typeService.isEmpty()) {
+            pageResult = reparationRepository.findByTypeIgnoreCase(typeService, pageable);
+        } else {
+            pageResult = reparationRepository.findAll(pageable);
+        }
+
+        return pageResult.map(ReparationMapper::toReparationDto);
+    }
+
+    public Page<ReparationDto> searchReparations(int page, int size, String typeService, String keyword) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        // si "all", ignore le filtre typeService
+        if ("all".equalsIgnoreCase(typeService)) {
+            return reparationRepository.searchByKeyword(keyword, pageable)
+                    .map(ReparationMapper::toReparationDto);
+        } else {
+            return reparationRepository.searchByKeywordAndType(keyword, typeService, pageable)
+                    .map(ReparationMapper::toReparationDto);
+        }
+    }
+
+
+
+
     @Transactional
     public String uploadImage(final Long id, final MultipartFile file) {
         Reparation reparation = reparationRepository.findById(id)

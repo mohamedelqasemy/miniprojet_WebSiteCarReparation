@@ -39,6 +39,27 @@ public class ReparationRestController {
         return ResponseEntity.ok(pageResult);
     }
 
+    @GetMapping("/filtered/paginated")
+    public ResponseEntity<Page<ReparationDto>> getPaginatedReparations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String typeService) {
+
+        Page<ReparationDto> pageResult = reparationService.getFilterdPaginatedReparations(page, size, typeService);
+        return ResponseEntity.ok(pageResult);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<ReparationDto>> searchReparations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String typeService,
+            @RequestParam(required = false) String keyword) {
+
+        Page<ReparationDto> results = reparationService.searchReparations(page, size, typeService, keyword);
+        return ResponseEntity.ok(results);
+    }
+
 
     //get a specific reparation
     @GetMapping("/{id}")
