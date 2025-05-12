@@ -15,6 +15,7 @@ import com.ensas.reservationservice.model.CarDto;
 import com.ensas.reservationservice.model.GarageDto;
 import com.ensas.reservationservice.model.Reparation;
 import com.ensas.reservationservice.model.User;
+import com.ensas.reservationservice.util.ReservationSpecification;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -61,6 +63,7 @@ public class ReservationService {
         newReservation.setGarageId(reservation.getGarageId());
         newReservation.setUserId(reservation.getUserId());
         newReservation.setServiceId(reservation.getServiceId());
+        newReservation.setServiceNames(services.stream().map(Reparation::getName).collect(Collectors.toList()));
 
         CarDto carDto = CarDto.builder()
                 .brand(reservation.getBrand())
@@ -96,9 +99,12 @@ public class ReservationService {
         reservationRepository.deleteById(id);
     }
 
-    public Page<ReservationResponseDto> getAllReservationsPaginated(int page, int size) {
+    public Page<ReservationResponseDto> getAllReservationsPaginated(int page, int size,String search) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Reservation> reservationPage = reservationRepository.findAll(pageable);
+//        Page<Reservation> reservationPage = reservationRepository.findAll(pageable);
+        Specification<Reservation> spec = Specification.where(null);
+        spec = spec.and(ReservationSpecification.hasName(search));
+        Page<Reservation> reservationPage = reservationRepository.findAll(spec,pageable);
 
         return reservationPage.map(reservation -> {
             GarageDto garage = garageRestClient.getGarageById(reservation.getGarageId());

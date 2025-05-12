@@ -26,4 +26,7 @@ public class Reservation {
     private Long GarageId;
     @ElementCollection
     private List<Long> serviceId;
+    @ElementCollection
+    private List<String> serviceNames;
+
 }

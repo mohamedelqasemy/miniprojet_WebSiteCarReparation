@@ -34,9 +34,10 @@ public class ReservationController {
     @GetMapping("/paginated")
     public ResponseEntity<Page<ReservationResponseDto>> getAllReservationsPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) String search
     ) {
-        Page<ReservationResponseDto> reservations = reservationService.getAllReservationsPaginated(page, size);
+        Page<ReservationResponseDto> reservations = reservationService.getAllReservationsPaginated(page, size,search);
         return ResponseEntity.ok(reservations);
     }
 
