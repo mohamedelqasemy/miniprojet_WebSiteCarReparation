@@ -62,4 +62,13 @@ public class ReservationController {
         reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();
     }
+
+    //blocked days
+    @GetMapping("/blocked-dates")
+    public List<String> getBlockedDatesFromTomorrow(
+            @RequestParam(defaultValue = "8") int maxPerDay
+    ) {
+        return reservationService.getBlockedDatesFromTomorrow(maxPerDay);
+    }
+
 }

@@ -76,4 +76,12 @@ public class RequestHomeRestController {
         Page<RequestHomeResponse> requests = requestHomeService.getAllRequestPaginated(page, size);
         return ResponseEntity.ok(requests);
     }
+
+    //blocked days
+    @GetMapping("/blocked-dates")
+    public List<String> getBlockedDatesFromTomorrow(
+            @RequestParam(defaultValue = "8") int maxPerDay
+    ) {
+        return requestHomeService.getBlockedDatesFromTomorrow(maxPerDay);
+    }
 }

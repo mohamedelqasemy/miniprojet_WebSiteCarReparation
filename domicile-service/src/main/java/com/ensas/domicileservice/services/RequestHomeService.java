@@ -24,7 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -143,6 +145,27 @@ public class RequestHomeService {
     }
 
 
+    //for giving blocked days
+    public List<String> getBlockedDatesFromTomorrow(int maxPerDay) {
+        // Start from tomorrow
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, 1);
+        Date tomorrow = truncateTime(cal.getTime());
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        return requestHomeRepository.findAll().stream()
+                .filter(res -> res.getStatus() != EnumStatus.Rejected)
+                .map(res -> truncateTime(res.getDateDemand()))
+                .filter(date -> !date.before(tomorrow)) // Only from tomorrow onward
+                .collect(Collectors.groupingBy(date -> date, Collectors.counting()))
+                .entrySet().stream()
+                .filter(entry -> entry.getValue() >= maxPerDay)
+                .map(entry -> sdf.format(entry.getKey())) // Format as string: yyyy-MM-dd
+                .toList();
+    }
+
+
 
 
     // ====================
@@ -184,6 +207,15 @@ public class RequestHomeService {
             defaultService.setImage("default.jpg");
             return defaultService;
         }
+    }
+    private Date truncateTime(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
     }
     
 }
