@@ -21,6 +21,8 @@ public class RequestHome {
     private Long carId;
     @ElementCollection
     private List<Long> serviceId;
+    @ElementCollection
+    private List<String> serviceNames;
     private String address;
     private Date dateDemand;
     private EnumStatus status;

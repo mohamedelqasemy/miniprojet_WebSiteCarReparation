@@ -71,9 +71,10 @@ public class RequestHomeRestController {
     @GetMapping("/paginated")
     public ResponseEntity<Page<RequestHomeResponse>> getAllRequestPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) String search
     ) {
-        Page<RequestHomeResponse> requests = requestHomeService.getAllRequestPaginated(page, size);
+        Page<RequestHomeResponse> requests = requestHomeService.getAllRequestPaginated(page, size,search);
         return ResponseEntity.ok(requests);
     }
 

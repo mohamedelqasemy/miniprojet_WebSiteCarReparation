@@ -15,6 +15,7 @@ import com.ensas.domicileservice.models.CarDto;
 import com.ensas.domicileservice.models.Reparation;
 import com.ensas.domicileservice.models.User;
 import com.ensas.domicileservice.repositories.RequestHomeRepository;
+import com.ensas.domicileservice.util.RequestHomeSpecification;
 import feign.FeignException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -72,6 +74,7 @@ public class RequestHomeService {
         newReservation.setUserId(reservation.getUserId());
         newReservation.setServiceId(reservation.getServiceId());
         newReservation.setAddress(reservation.getAddress());
+        newReservation.setServiceNames(services.stream().map(Reparation::getName).collect(Collectors.toList()));
 
         CarDto carDto = CarDto.builder()
                 .brand(reservation.getBrand())
@@ -131,9 +134,12 @@ public class RequestHomeService {
                 .build();
     }
 
-    public Page<RequestHomeResponse> getAllRequestPaginated(int page, int size) {
+    public Page<RequestHomeResponse> getAllRequestPaginated(int page, int size,String search) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<RequestHome> reservationPage = requestHomeRepository.findAll(pageable);
+//        Page<RequestHome> reservationPage = requestHomeRepository.findAll(spec,pageable);
+        Specification<RequestHome> spec = Specification.where(null);
+        spec = spec.and(RequestHomeSpecification.hasName(search));
+        Page<RequestHome> reservationPage = requestHomeRepository.findAll(spec,pageable);
 
         return reservationPage.map(request -> {
             User user = userRestClient.getUserById(request.getUserId());
