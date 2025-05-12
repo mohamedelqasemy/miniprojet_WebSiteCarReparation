@@ -16,7 +16,7 @@ import java.util.List;
 public class CommandDto {
     private Long id;
     private Date date;
-    private int total;
+    private double total;
     @Enumerated(EnumType.STRING)
     private EnumStatus status;
     private Long userId;

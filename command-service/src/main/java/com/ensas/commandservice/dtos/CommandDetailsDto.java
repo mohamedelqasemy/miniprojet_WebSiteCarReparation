@@ -12,7 +12,7 @@ public class CommandDetailsDto {
     private Long commandId;
     private Long equipmentId;
     private int quantity;
-    private int unitPrice;
+    private double unitPrice;
     private String equipmentName;
     private String equipmentImage;
 }

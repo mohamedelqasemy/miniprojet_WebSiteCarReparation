@@ -62,6 +62,7 @@ public class BreakdownHistoryService {
         if(breakdownHistoryDto.getCarId() != null) {
             existingHistory.setCarId(breakdownHistoryDto.getCarId());
         }
+        repository.save(existingHistory);
         return BreakdownHistoryMapper.toDto(existingHistory);
     }
 

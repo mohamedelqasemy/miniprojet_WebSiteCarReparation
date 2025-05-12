@@ -19,6 +19,7 @@ public class BreakdownHistoryMapper {
     public static BreakdownHistoryDto toDto(BreakdownHistory breakdownHistory) {
         BreakdownHistoryDto breakdownHistoryDto = new BreakdownHistoryDto();
         BeanUtils.copyProperties(breakdownHistory, breakdownHistoryDto);
+
         return breakdownHistoryDto;
     }
 

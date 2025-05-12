@@ -19,7 +19,7 @@ public class Command {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Date date;
-    private int total;
+    private double total;
     @Enumerated(EnumType.STRING)
     private EnumStatus status;
     private Long userId;

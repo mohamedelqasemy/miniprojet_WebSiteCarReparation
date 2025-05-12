@@ -20,6 +20,7 @@
         <option value="$PROJECT_DIR$/historique-pannes-service/pom.xml" />
         <option value="$PROJECT_DIR$/IA-service/pom.xml" />
         <option value="$PROJECT_DIR$/garage-service/pom.xml" />
+        <option value="$PROJECT_DIR$/dashboard-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

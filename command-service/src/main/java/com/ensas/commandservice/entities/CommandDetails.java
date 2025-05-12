@@ -18,5 +18,5 @@ public class CommandDetails {
     private Command command;
     private Long equipmentId;
     private int quantity;
-    private int unitPrice;
+    private double unitPrice;
 }
