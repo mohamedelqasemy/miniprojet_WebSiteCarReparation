@@ -30,6 +30,23 @@ public class EquipmentRestController {
         return ResponseEntity.ok(equipmentsDto);
     }
 
+    @GetMapping("/filtered/paginated")
+    public ResponseEntity<Page<EquipmentDto>> getEquipmentsFiltered(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam(required = false) String keyword) {
+
+        Page<EquipmentDto> result;
+        if (keyword == null || keyword.isEmpty()) {
+            result = equipmentService.getAllEquipmentPaginated(page, size);
+        } else {
+            result = equipmentService.searchEquipmentsPaginated(keyword, page, size);
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
+
     @GetMapping("/{id}")
     public ResponseEntity<EquipmentDto> getEquipmentById(@PathVariable("id") Long id) {
         EquipmentDto equipment = equipmentService.getEquipmentById(id);

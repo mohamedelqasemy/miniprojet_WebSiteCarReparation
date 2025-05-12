@@ -12,6 +12,7 @@ import com.ensas.equipementservice.models.User;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,32 @@ public class EquipmentMapper {
 
         return dto;
     }
+
+    public static EquipmentDto toDtoSearch(Equipment equipment) {
+        EquipmentDto dto = new EquipmentDto();
+        BeanUtils.copyProperties(equipment, dto);
+
+        // Images
+        if (equipment.getImages() != null) {
+            dto.setImageLinks(equipment.getImages().stream()
+                    .map(ImageEquipment::getImageLink)
+                    .collect(Collectors.toList()));
+        }
+
+        // Ratings
+        if (equipment.getRatings() != null && !equipment.getRatings().isEmpty()) {
+            double avg = equipment.getRatings().stream()
+                    .mapToInt(Rating::getStars)
+                    .average()
+                    .orElse(0.0);
+            dto.setAverageRating(avg);
+        }
+        dto.setComments(Collections.emptyList());
+
+        return dto;
+    }
+
+
     private static CommentResponseDto toCommentResponseDto(Comment comment, UserFeignClient userFeignClient) {
         User user = userFeignClient.getUserById(comment.getUserId()).getBody();
         return CommentResponseDto.builder()

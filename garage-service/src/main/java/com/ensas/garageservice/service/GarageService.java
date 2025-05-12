@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,12 @@ public class GarageService {
         Pageable pageable = PageRequest.of(page, size);
         return garageRepository.findAll(pageable)
                 .map(GarageMapper::toDto);
+    }
+
+    public Page<GarageDto> getFilteredGarages(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("dateCreation").descending());
+        Page<Garage> garages = garageRepository.findByKeyword(keyword, pageable);
+        return garages.map(GarageMapper::toDto);
     }
 
     public ResponseEntity<GarageDto> getGarageById(Long garageId) {

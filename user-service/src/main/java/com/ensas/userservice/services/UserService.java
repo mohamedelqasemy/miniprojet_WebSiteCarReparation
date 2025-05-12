@@ -99,6 +99,13 @@ public class UserService {
         return userPage.map(UserMapper::toDTO);
     }
 
+    public Page<UserDto> getUsersByRolePaginated(String role, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<User> userPage = userRepository.findByRole(role, pageable);
+        return userPage.map(UserMapper::toDTO);
+    }
+
+
     @Transactional
     public String uploadImage(final Long id, final MultipartFile file) {
         User user = userRepository.findById(id)

@@ -30,6 +30,14 @@ public class GarageRestController {
         return ResponseEntity.ok(requests);
     }
 
+    @GetMapping("/filtered/paginated")
+    public ResponseEntity<Page<GarageDto>> getFilteredGarages(
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return ResponseEntity.ok(garageService.getFilteredGarages(keyword, page, size));
+    }
+
     @GetMapping("/{garageId}")
     public ResponseEntity<GarageDto> getGarageById(@PathVariable Long garageId) {
         return garageService.getGarageById(garageId);

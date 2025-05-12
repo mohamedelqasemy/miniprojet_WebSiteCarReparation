@@ -4,6 +4,8 @@ import com.ensas.userservice.dtos.UserDto;
 import com.ensas.userservice.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,12 +69,23 @@ public class UserRestController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/filtered/paginated")
+    public ResponseEntity<Page<UserDto>> getFilteredUsersPaginated(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam(required = false) String role) {
 
-//    @PostMapping("/image/{id}")
-//    public ResponseEntity<?> uploadImage(@PathVariable final Long id, @RequestPart final MultipartFile file) {
-//        String url = userService.uploadImage(id, file);
-//        return ResponseEntity.ok(url);
-//    }
+        Page<UserDto> result;
+
+        if (role == null || role.isEmpty()) {
+            result = userService.getAllUsersPaginated(page, size);
+        } else {
+            result = userService.getUsersByRolePaginated(role, page, size);
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<String> uploadImage(
             @PathVariable Long id,

@@ -44,6 +44,13 @@ public class EquipmentService {
         return EquipmentMapper.toDTOList(equipments,userFeignClient);
     }
 
+    public Page<EquipmentDto> searchEquipmentsPaginated(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Equipment> equipmentPage = equipmentRepository.searchByKeyword(keyword, pageable);
+        return equipmentPage.map(EquipmentMapper::toDtoSearch);
+    }
+
+
     public EquipmentDto getEquipmentById(Long id) {
         return equipmentRepository.findById(id)
                 .map(equipment -> EquipmentMapper.toDTO(equipment, userFeignClient))
