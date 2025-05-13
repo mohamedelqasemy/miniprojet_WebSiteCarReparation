@@ -30,6 +30,7 @@ public class UserServiceApplication {
                             .enabled(true)
                             .publicId("atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658")
                             .image("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746615425/atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658.jpg")
+                            .address("Agadir avenue")
                             .created(new Date())
                     .build(),
                     User.builder()
@@ -55,6 +56,7 @@ public class UserServiceApplication {
                             .num("0755667788")
                             .publicId("atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658")
                             .image("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746615425/atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658.jpg")
+                            .address("Boulevard Al joulane")
                             .build(),
                     User.builder()
                             .firstname("John4")
@@ -67,6 +69,7 @@ public class UserServiceApplication {
                             .created(new Date())
                             .publicId("atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658")
                             .image("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746615425/atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658.jpg")
+                            .address("Avenue Mohammed 6")
                             .build(),
                     User.builder()
                             .firstname("John5")
@@ -79,6 +82,7 @@ public class UserServiceApplication {
                             .created(new Date())
                             .publicId("atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658")
                             .image("https://res.cloudinary.com/dhfpiuaef/image/upload/v1746615425/atlas/clients/atlas/clients/Mohamed_Salah_2018_20250507115658.jpg")
+                            .address("Avenue Hassan 2")
                             .build()
             );
 

@@ -31,8 +31,8 @@ public class UserService {
 
     public UserDto createUser(UserDto userDto) {
         User newUser = UserMapper.toEntity(userDto);
-        newUser.setEnabled(true);
-        newUser.setRole("USER");
+//        newUser.setEnabled(true);
+//        newUser.setRole("USER");
         newUser.setCreated(new Date());
 
         newUser = userRepository.save(newUser);
@@ -70,9 +70,20 @@ public class UserService {
         if (userDto.getPassword() != null) {
             existingUser.setPassword(userDto.getPassword());
         }
-        if (userDto.getEmail() != null) {
+        if (userDto.getRole() != null) {
+            existingUser.setRole(userDto.getRole());
+        }
+        if (userDto.getAddress() != null){
+            existingUser.setAddress(userDto.getAddress());
+        }
+        if(userDto.getEmail() != null){
             existingUser.setEmail(userDto.getEmail());
         }
+        if (userDto.getNum() != null){
+            existingUser.setNum(userDto.getNum());
+        }
+        existingUser.setEnabled(userDto.isEnabled());
+
 
         return UserMapper.toDTO(existingUser);
     }
