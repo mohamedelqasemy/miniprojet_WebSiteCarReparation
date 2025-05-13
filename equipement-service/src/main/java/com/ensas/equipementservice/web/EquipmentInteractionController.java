@@ -2,6 +2,7 @@ package com.ensas.equipementservice.web;
 
 import com.ensas.equipementservice.dtos.CommentRequestDto;
 import com.ensas.equipementservice.dtos.RatingRequestDto;
+import com.ensas.equipementservice.dtos.ResponseMessageDto;
 import com.ensas.equipementservice.entities.Comment;
 import com.ensas.equipementservice.entities.Equipment;
 import com.ensas.equipementservice.entities.Rating;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 
@@ -31,40 +33,43 @@ public class EquipmentInteractionController {
     private final EquipmentService equipmentService;
 
     @PostMapping("/rate")
-    public ResponseEntity<String> addRating(@RequestBody RatingRequestDto dto) {
+    public ResponseEntity<ResponseMessageDto> addRating(@RequestBody RatingRequestDto dto) {
         // Vérifier si l'utilisateur existe en appelant le Feign Client
         if (!equipmentService.isUserExists(dto.getUserId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("User not found");
+                    .body(new ResponseMessageDto("User not found", false));
         }
 
         // Valider que l'équipement existe
         Equipment equipment = equipmentRepository.findById(dto.getEquipmentId())
-                .orElseThrow(() -> new NotFoundException("Equipment not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Equipment not found"));
 
+        // Créer l'objet Rating
         Rating rating = Rating.builder()
                 .stars(dto.getStars())
                 .userId(dto.getUserId())
                 .equipment(equipment)
                 .build();
 
+        // Sauvegarder l'évaluation
         ratingRepository.save(rating);
-        return ResponseEntity.ok("Rating added successfully");
+
+        // Retourner une réponse structurée
+        return ResponseEntity.ok(new ResponseMessageDto("Rating added successfully", true));
     }
 
     @PostMapping("/comment")
-    public ResponseEntity<String> addComment(@RequestBody CommentRequestDto dto) {
+    public ResponseEntity<ResponseMessageDto> addComment(@RequestBody CommentRequestDto dto) {
         // Vérifier si l'utilisateur existe en appelant le Feign Client
         System.out.println("print addcomment");
         if (!equipmentService.isUserExists(dto.getUserId())) {
             System.out.println("print addcomment user not found");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("User not found");
+            return ResponseEntity.ok(new ResponseMessageDto("User Not Found", false));
         }
 
         // Valider que l'équipement existe
         Equipment equipment = equipmentRepository.findById(dto.getEquipmentId())
-                .orElseThrow(() -> new NotFoundException("Equipment not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Equipment not found"));
 
         Comment comment = Comment.builder()
                 .text(dto.getText())
@@ -74,6 +79,6 @@ public class EquipmentInteractionController {
                 .build();
 
         commentRepository.save(comment);
-        return ResponseEntity.ok("Comment added successfully");
+        return ResponseEntity.ok(new ResponseMessageDto("Comment added successfully", true));
     }
 }
