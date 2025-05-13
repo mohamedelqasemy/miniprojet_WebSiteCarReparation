@@ -28,7 +28,7 @@ public class HistoriquePannesServiceApplication {
                                         CarRestClient carRestClient){
 
         return args -> {
-            Collection<CarDto> cars = carRestClient.getAllCars().getContent();
+            Collection<CarDto> cars = carRestClient.getAllCars();
             System.out.println(cars.size());
 
             cars.forEach(car -> {

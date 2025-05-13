@@ -8,11 +8,13 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
+
 @FeignClient(name = "car-service")
 public interface CarRestClient {
     @GetMapping("/cars/{id}")
     CarDto getCarById(@PathVariable("id") Long id);
 
     @GetMapping("/cars")
-    PagedModel<CarDto> getAllCars();
+    List<CarDto> getAllCars();
 }
