@@ -93,6 +93,13 @@ public class UserRestController {
         String imageUrl = userService.uploadImage(id, file);
         return ResponseEntity.ok(imageUrl);
     }
+
+    @GetMapping("/by-username/{email}")
+    public UserDto getUserByEmail(@PathVariable String email) {
+        UserDto userDto = userService.getUserByEmail(email);
+        return userDto;
+    }
+
 }
 
 

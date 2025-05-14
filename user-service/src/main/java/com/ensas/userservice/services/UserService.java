@@ -124,4 +124,9 @@ public class UserService {
         return cloudinaryResponse.getUrl();
     }
 
+    public UserDto getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(UserMapper::toDTO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé avec l'email : " + email));
+    }
 }
