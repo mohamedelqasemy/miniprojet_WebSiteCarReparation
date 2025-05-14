@@ -1,6 +1,7 @@
 package com.ensas.equipementservice.web;
 
 import com.ensas.equipementservice.dtos.CommentRequestDto;
+import com.ensas.equipementservice.dtos.CommentResponseDto;
 import com.ensas.equipementservice.dtos.RatingRequestDto;
 import com.ensas.equipementservice.dtos.ResponseMessageDto;
 import com.ensas.equipementservice.entities.Comment;
@@ -14,13 +15,11 @@ import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/equipments")
@@ -80,5 +79,11 @@ public class EquipmentInteractionController {
 
         commentRepository.save(comment);
         return ResponseEntity.ok(new ResponseMessageDto("Comment added successfully", true));
+    }
+
+    @GetMapping("/comments/latest")
+    public ResponseEntity<List<CommentResponseDto>> getLatestComments() {
+        List<CommentResponseDto> comments = equipmentService.getLast5Comments();
+        return ResponseEntity.ok(comments);
     }
 }

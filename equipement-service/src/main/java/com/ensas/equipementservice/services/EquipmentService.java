@@ -1,11 +1,15 @@
 package com.ensas.equipementservice.services;
 
 import com.ensas.equipementservice.dtos.CloudinaryResponse;
+import com.ensas.equipementservice.dtos.CommentResponseDto;
 import com.ensas.equipementservice.dtos.EquipmentDto;
+import com.ensas.equipementservice.entities.Comment;
 import com.ensas.equipementservice.entities.Equipment;
 import com.ensas.equipementservice.entities.ImageEquipment;
 import com.ensas.equipementservice.feign.UserFeignClient;
 import com.ensas.equipementservice.mappers.EquipmentMapper;
+import com.ensas.equipementservice.models.User;
+import com.ensas.equipementservice.repositories.CommentRepository;
 import com.ensas.equipementservice.repositories.EquipmentRepository;
 import com.ensas.equipementservice.util.EquipmentSpecification;
 import feign.FeignException;
@@ -25,11 +29,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class EquipmentService {
 
     private final EquipmentRepository equipmentRepository;
+    private final CommentRepository commentRepository;
     private final UserFeignClient userFeignClient;
     private final CloudinaryService cloudinaryService;
 
@@ -131,6 +138,22 @@ public class EquipmentService {
             return false;
         }
     }
+
+    public List<CommentResponseDto> getLast5Comments() {
+        List<Comment> comments = commentRepository.findTop5ByOrderByDateDesc();
+
+        return comments.stream().map(comment -> {
+            User user = userFeignClient.getUserById(comment.getUserId()).getBody();
+            return new CommentResponseDto(
+                    comment.getText(),
+                    user.getFirstname() + " " + user.getLastname(),
+                    user.getImage(),
+                    comment.getDate()
+            );
+        }).collect(Collectors.toList());
+    }
+
+
 
     public Page<EquipmentDto> getAllEquipmentPaginated(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending()); // ou autre tri
