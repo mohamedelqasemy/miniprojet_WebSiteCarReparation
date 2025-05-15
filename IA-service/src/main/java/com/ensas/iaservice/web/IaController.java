@@ -19,9 +19,13 @@ public class IaController {
     }
 
     @PostMapping("/predict")
-    public ResponseEntity<?> predict(@RequestParam("image") MultipartFile image) throws IOException {
-        // Appeler le service IA pour traiter l'image et récupérer les résultats
-        Map<String, Object> result = iaService.predictDamage(image);
-        return ResponseEntity.ok(result); // Retourner la réponse au frontend
+    public ResponseEntity<?> predict(@RequestParam("image") MultipartFile image) {
+        try {
+            Map<String, Object> result = iaService.predictDamage(image);
+            return ResponseEntity.ok(result);
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("error", "Erreur lors du traitement de l'image : " + e.getMessage()));
+        }
     }
 }

@@ -16,7 +16,7 @@ public class IaService {
 
     public Map<String, Object> predictDamage(MultipartFile file) throws IOException {
         // URL de FastAPI
-        String url = "http://localhost:8000/predict"; // Adresse de FastAPI (Docker)
+        String url = "https://sturdy-fortnight-wr5vpx9r5pwh5jp9-8000.app.github.dev/predict"; // Adresse de FastAPI (Docker)
 
         // Création de RestTemplate
         RestTemplate restTemplate = new RestTemplate();
