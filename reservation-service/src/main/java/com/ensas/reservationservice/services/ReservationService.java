@@ -48,6 +48,21 @@ public class ReservationService {
         return reservationRepository.findById(id);
     }
 
+
+    public Page<ReservationResponseDto> getReservationsByClient(Long userId, Pageable pageable) {
+        Page<Reservation> reservations = reservationRepository.findByUserId(userId, pageable);
+
+        return reservations.map(reservation -> {
+            User user = userRestClient.getUserById(userId);
+            List<Reparation> reparations = reservation.getServiceId().stream()
+                    .map(serviceRestClient::getServiceById)
+                    .collect(Collectors.toList());
+            GarageDto garageDto = garageRestClient.getGarageById(reservation.getGarageId());
+
+            return ReservationMapper.mapToDtoN(reservation, user, reparations, garageDto);
+        });
+    }
+
     public Reservation createReservation(ReservationRequest reservation) {
         // Récupération sécurisée des entités liées
         User user = getUserSafe(reservation.getUserId());

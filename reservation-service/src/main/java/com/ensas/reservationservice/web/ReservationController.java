@@ -7,6 +7,8 @@ import com.ensas.reservationservice.entities.Reservation;
 import com.ensas.reservationservice.services.ReservationService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +41,16 @@ public class ReservationController {
     ) {
         Page<ReservationResponseDto> reservations = reservationService.getAllReservationsPaginated(page, size,search);
         return ResponseEntity.ok(reservations);
+    }
+
+    @GetMapping("/user/{userId}/paginated")
+    public Page<ReservationResponseDto> getClientReservations(
+            @PathVariable("userId") Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return reservationService.getReservationsByClient(userId, pageable);
     }
 
     //gat a specific reservation
