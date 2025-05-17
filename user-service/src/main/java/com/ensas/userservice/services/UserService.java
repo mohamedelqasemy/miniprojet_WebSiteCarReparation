@@ -92,6 +92,17 @@ public class UserService {
         return UserMapper.toDTO(existingUser);
     }
 
+    @Transactional
+    public String updateUserImage(Long id, final MultipartFile file) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        String url = uploadImage(id,file);
+        existingUser.setImage(url);
+
+        return url;
+    }
+
+
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));

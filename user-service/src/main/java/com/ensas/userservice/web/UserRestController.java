@@ -46,6 +46,14 @@ public class UserRestController {
        UserDto user = userService.updateUser(id,userDto);
        return ResponseEntity.ok(user);
     }
+    //update just image
+    @PostMapping("/update-image/{id}")
+    public ResponseEntity<String> updateImage(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        String imageUrl = userService.updateUserImage(id, file);
+        return ResponseEntity.ok(imageUrl);
+    }
 
     //delete some one
     @DeleteMapping("/{id}")
