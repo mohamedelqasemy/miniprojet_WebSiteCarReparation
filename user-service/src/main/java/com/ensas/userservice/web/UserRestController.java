@@ -1,5 +1,6 @@
 package com.ensas.userservice.web;
 
+import com.ensas.userservice.dtos.PasswordChangeRequest;
 import com.ensas.userservice.dtos.UserDto;
 import com.ensas.userservice.services.UserService;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,17 @@ public class UserRestController {
        List<UserDto> userDtoList = userService.getAllUsers();
        return ResponseEntity.ok(userDtoList);
     }
+
+    @PostMapping("/{id}/password")
+    public ResponseEntity<?> updatePass(
+            @PathVariable Long id,
+            @RequestBody PasswordChangeRequest request
+    ) {
+        userService.updateUserPass(id, request.getCurrentPassword(), request.getNewPassword());
+        return ResponseEntity.ok().build();
+    }
+
+
 
     //get a specific user
     @GetMapping("/{id}")

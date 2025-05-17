@@ -93,6 +93,14 @@ public class UserService {
     }
 
     @Transactional
+    public void updateUserPass(Long id, String currentPass, String newPass) {
+
+        keycloakAdminClient.updateUserPassword(id,currentPass,newPass);
+
+    }
+
+
+    @Transactional
     public String updateUserImage(Long id, final MultipartFile file) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
