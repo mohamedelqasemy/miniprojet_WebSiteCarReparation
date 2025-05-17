@@ -28,6 +28,7 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final CloudinaryService cloudinaryService;
+    private final KeycloakAdminClient keycloakAdminClient;
 
     public UserDto createUser(UserDto userDto) {
         User newUser = UserMapper.toEntity(userDto);
@@ -83,6 +84,9 @@ public class UserService {
             existingUser.setNum(userDto.getNum());
         }
         existingUser.setEnabled(userDto.isEnabled());
+
+        //modify information in keycloack
+        keycloakAdminClient.updateUser(userDto);
 
 
         return UserMapper.toDTO(existingUser);
