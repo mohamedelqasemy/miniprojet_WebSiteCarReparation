@@ -1,6 +1,10 @@
 package com.ensas.equipementservice.web;
 
 import com.ensas.equipementservice.dtos.EquipmentDto;
+import com.ensas.equipementservice.entities.Equipment;
+import com.ensas.equipementservice.feign.UserFeignClient;
+import com.ensas.equipementservice.mappers.EquipmentMapper;
+import com.ensas.equipementservice.repositories.EquipmentRepository;
 import com.ensas.equipementservice.services.EquipmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,12 +13,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/equipments")
 @AllArgsConstructor()
 public class EquipmentRestController {
     private final EquipmentService equipmentService;
+    private final EquipmentRepository equipmentRepository;
+    private final UserFeignClient userFeignClient;
 
     @GetMapping
     public ResponseEntity<List<EquipmentDto>> getAllEquipments() {
@@ -44,6 +51,14 @@ public class EquipmentRestController {
         }
 
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/byIds")
+    public List<EquipmentDto> getEquipmentsByIds(@RequestParam("ids") List<Long> ids) {
+        List<Equipment> equipments = equipmentRepository.findAllById(ids);
+        return equipments.stream()
+                .map(e -> EquipmentMapper.toDTO(e, userFeignClient))
+                .collect(Collectors.toList());
     }
 
 

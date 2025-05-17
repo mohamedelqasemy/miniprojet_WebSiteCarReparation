@@ -1,5 +1,6 @@
 package com.ensas.commandservice.services;
 
+import com.ensas.commandservice.dtos.CommandDetailsDto;
 import com.ensas.commandservice.dtos.CommandDto;
 import com.ensas.commandservice.entities.Command;
 import com.ensas.commandservice.entities.CommandDetails;
@@ -10,11 +11,12 @@ import com.ensas.commandservice.repositories.CommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +59,50 @@ public class CommandService {
                 .map(CommandMapper::toDTO)
                 .map(this::enrichCommandDto)
                 .orElseThrow(() -> new RuntimeException("Commande non trouvée"));
+    }
+
+    public Page<CommandDto> getCommandsByUserIdPaginated(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        Page<Command> commandPage = commandRepository.findByUserId(userId, pageable);
+
+        // Collecter tous les equipmentIds utilisés dans les commandes
+        Set<Long> equipmentIds = commandPage.getContent().stream()
+                .flatMap(command -> command.getCommandDetails().stream())
+                .map(CommandDetails::getEquipmentId)
+                .collect(Collectors.toSet());
+
+        // Récupération en une seule fois
+        List<Equipment> equipments = equipmentRestClient.getEquipmentsByIds(new ArrayList<>(equipmentIds));
+        Map<Long, Equipment> equipmentMap = equipments.stream()
+                .collect(Collectors.toMap(Equipment::getId, e -> e));
+
+        // Mapper les commandes enrichies
+        return commandPage.map(command -> {
+            List<CommandDetailsDto> enrichedDetails = command.getCommandDetails().stream().map(detail -> {
+                Equipment equipment = equipmentMap.get(detail.getEquipmentId());
+
+                return CommandDetailsDto.builder()
+                        .id(detail.getId())
+                        .commandId(detail.getCommand().getId())
+                        .equipmentId(detail.getEquipmentId())
+                        .quantity(detail.getQuantity())
+                        .unitPrice(detail.getUnitPrice())
+                        .equipmentName(equipment != null ? equipment.getName() : null)
+                        .equipmentImage((equipment != null && equipment.getImageLinks() != null && !equipment.getImageLinks().isEmpty())
+                                ? equipment.getImageLinks().get(0)
+                                : null)
+                        .build();
+            }).collect(Collectors.toList());
+
+            return CommandDto.builder()
+                    .id(command.getId())
+                    .date(command.getDate())
+                    .status(command.getStatus())
+                    .total(command.getTotal())
+                    .userId(command.getUserId())
+                    .commandDetails(enrichedDetails)
+                    .build();
+        });
     }
 
     // Mettre à jour une commande

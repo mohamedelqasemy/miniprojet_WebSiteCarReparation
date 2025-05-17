@@ -62,4 +62,14 @@ public class CommandRestController {
         List<CommandDto> commands = commandService.getCommandsByUserId(userId);
         return ResponseEntity.ok(commands);
     }
+
+    @GetMapping("/user/{userId}/paginated")
+    public ResponseEntity<Page<CommandDto>> getCommandsByUserIdPaginated(
+            @PathVariable("userId") Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Page<CommandDto> commands = commandService.getCommandsByUserIdPaginated(userId, page, size);
+        return ResponseEntity.ok(commands);
+    }
 }
