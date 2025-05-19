@@ -96,4 +96,11 @@ public class CarService {
         return carRepository.findAll(pageable)
                 .map(CarMapper::toCarDto);
     }
+
+    public Long getCarByLicensePlate(String licensePlate) {
+        return carRepository.findByLicensePlate(licensePlate)
+                .map(Car::getId)
+                .orElse(0L); // return 0 if not found
+
+    }
 }

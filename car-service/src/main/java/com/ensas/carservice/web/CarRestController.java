@@ -63,6 +63,12 @@ public class CarRestController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/id-by-license")
+    public ResponseEntity<Long> getCarIdByLicensePlate(@RequestParam String licensePlate) {
+        Long carId = carService.getCarByLicensePlate(licensePlate);
+        return ResponseEntity.ok(carId);
+    }
+
 
 
 }

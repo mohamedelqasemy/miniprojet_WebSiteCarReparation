@@ -3,17 +3,15 @@ package com.ensas.domicileservice.services;
 import com.ensas.domicileservice.dtos.RequestHomeDto;
 import com.ensas.domicileservice.dtos.RequestHomeRequest;
 import com.ensas.domicileservice.dtos.RequestHomeResponse;
+import com.ensas.domicileservice.feign.HistoryRestClient;
 import com.ensas.domicileservice.mappers.UserMapper;
-import com.ensas.domicileservice.models.UserDto;
+import com.ensas.domicileservice.models.*;
 import com.ensas.domicileservice.entities.RequestHome;
 import com.ensas.domicileservice.enums.EnumStatus;
 import com.ensas.domicileservice.feign.CarRestClient;
 import com.ensas.domicileservice.feign.ServiceRestClient;
 import com.ensas.domicileservice.feign.UserRestClient;
 import com.ensas.domicileservice.mappers.RequestHomeMapper;
-import com.ensas.domicileservice.models.CarDto;
-import com.ensas.domicileservice.models.Reparation;
-import com.ensas.domicileservice.models.User;
 import com.ensas.domicileservice.repositories.RequestHomeRepository;
 import com.ensas.domicileservice.util.RequestHomeSpecification;
 import feign.FeignException;
@@ -40,12 +38,14 @@ public class RequestHomeService {
     private final UserRestClient userRestClient;
     private final CarRestClient carRestClient;
     private final ServiceRestClient serviceRestClient;
+    private final HistoryRestClient historyRestClient;
 
-    public RequestHomeService(RequestHomeRepository requestHomeRepository, UserRestClient userRestClient, CarRestClient carRestClient, ServiceRestClient serviceRestClient) {
+    public RequestHomeService(RequestHomeRepository requestHomeRepository, UserRestClient userRestClient, CarRestClient carRestClient, ServiceRestClient serviceRestClient,HistoryRestClient historyRestClient) {
         this.requestHomeRepository = requestHomeRepository;
         this.userRestClient = userRestClient;
         this.carRestClient = carRestClient;
         this.serviceRestClient = serviceRestClient;
+        this.historyRestClient = historyRestClient;
     }
     
     public List<RequestHomeDto> getAllRequestHome(){
@@ -86,8 +86,23 @@ public class RequestHomeService {
                 .userId(user.getId())
                 .build();
 
-        CarDto newCar= carRestClient.createCar(carDto);
-        newReservation.setCarId(newCar.getId());
+        Long myCarId = carRestClient.getCarIdByLicensePlate(reservation.getLicensePlate().trim());
+
+        Long carId = myCarId;
+        if (carId == 0) {
+            CarDto newCar = carRestClient.createCar(carDto);
+            carId = newCar.getId();
+        }
+        newReservation.setCarId(carId);
+
+        BreakdownHistoryDto newHistory = BreakdownHistoryDto.builder()
+                .carId(carId)
+                .datePanne(reservation.getDate())
+                .isRepaired(false)
+                .nomPanne("fin njibo smiyat les pannes a drari")
+                .description("o htta desc")
+                .build();
+        BreakdownHistoryDto createdHistory = historyRestClient.createBreakdownHistory(newHistory);
         return requestHomeRepository.save(newReservation);
     }
 

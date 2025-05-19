@@ -6,15 +6,9 @@ import com.ensas.reservationservice.dtos.ReservationRequest;
 import com.ensas.reservationservice.dtos.ReservationResponseDto;
 import com.ensas.reservationservice.entities.Reservation;
 import com.ensas.reservationservice.enums.EnumStatus;
-import com.ensas.reservationservice.feign.CarRestClient;
-import com.ensas.reservationservice.feign.GarageRestClient;
-import com.ensas.reservationservice.feign.ServiceRestClient;
-import com.ensas.reservationservice.feign.UserRestClient;
+import com.ensas.reservationservice.feign.*;
 import com.ensas.reservationservice.mappers.ReservationMapper;
-import com.ensas.reservationservice.model.CarDto;
-import com.ensas.reservationservice.model.GarageDto;
-import com.ensas.reservationservice.model.Reparation;
-import com.ensas.reservationservice.model.User;
+import com.ensas.reservationservice.model.*;
 import com.ensas.reservationservice.util.ReservationSpecification;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
@@ -39,6 +33,7 @@ public class ReservationService {
     private final ServiceRestClient serviceRestClient;
     private final CarRestClient carRestClient;
     private final GarageRestClient garageRestClient;
+    private final HistoryRestClient historyRestClient;
 
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
@@ -90,8 +85,25 @@ public class ReservationService {
                 .userId(user.getId())
                 .build();
 
-        CarDto newCar= carRestClient.createCar(carDto);
-        newReservation.setCarId(newCar.getId());
+        Long myCarId = carRestClient.getCarIdByLicensePlate(reservation.getLicensePlate().trim());
+
+        Long carId = myCarId;
+        if (carId == 0) {
+            CarDto newCar = carRestClient.createCar(carDto);
+            carId = newCar.getId();
+        }
+        newReservation.setCarId(carId);
+
+        BreakdownHistoryDto newHistory = BreakdownHistoryDto.builder()
+                .carId(carId)
+                .datePanne(reservation.getDate())
+                .isRepaired(false)
+                .nomPanne("fin njibo smiyat les pannes a drari")
+                .description("o htta desc")
+                .build();
+        BreakdownHistoryDto createdHistory = historyRestClient.createBreakdownHistory(newHistory);
+
+
         return reservationRepository.save(newReservation);
     }
 
