@@ -83,9 +83,10 @@ public class UserRestController {
     @GetMapping("/paginated")
     public ResponseEntity<Page<UserDto>> getAllUsersPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) String search
     ) {
-        Page<UserDto> users = userService.getAllUsersPaginated(page, size);
+        Page<UserDto> users = userService.getAllUsersPaginated(page, size,search);
         return ResponseEntity.ok(users);
     }
 
@@ -93,12 +94,13 @@ public class UserRestController {
     public ResponseEntity<Page<UserDto>> getFilteredUsersPaginated(
             @RequestParam int page,
             @RequestParam int size,
+            @RequestParam(required = false) String search,
             @RequestParam(required = false) String role) {
 
         Page<UserDto> result;
 
         if (role == null || role.isEmpty()) {
-            result = userService.getAllUsersPaginated(page, size);
+            result = userService.getAllUsersPaginated(page, size,search);
         } else {
             result = userService.getUsersByRolePaginated(role, page, size);
         }

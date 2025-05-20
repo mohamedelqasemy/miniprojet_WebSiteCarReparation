@@ -6,6 +6,7 @@ import com.ensas.userservice.entities.User;
 import com.ensas.userservice.mappers.UserMapper;
 import com.ensas.userservice.repositories.UserRepository;
 import com.ensas.userservice.util.FileUploadUtil;
+import com.ensas.userservice.util.UserSpecification;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -127,9 +129,14 @@ public class UserService {
         return userRepository.existsById(id);
     }
 
-    public Page<UserDto> getAllUsersPaginated(int page, int size) {
+    public Page<UserDto> getAllUsersPaginated(int page, int size,String search) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<User> userPage = userRepository.findAll(pageable);
+
+        Specification<User> spec = Specification.where(null);
+        spec = spec.and(UserSpecification.hasName(search));
+
+        Page<User> userPage = userRepository.findAll(spec, pageable);
+
         return userPage.map(UserMapper::toDTO);
     }
 
