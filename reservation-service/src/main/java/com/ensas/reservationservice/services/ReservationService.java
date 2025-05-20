@@ -122,9 +122,31 @@ public class ReservationService {
         return reservationRepository.save(resUpdated);
     }
 
-    public void deleteReservation(Long id) {
-        reservationRepository.deleteById(id);
+    public void deleteReservation(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+
+        Long carId = reservation.getCarId();
+
+        List<BreakdownHistoryDto> carHistories = historyRestClient.getHistoriesByCarId(carId);
+
+        BreakdownHistoryDto targetHistory = carHistories.stream()
+                .filter(h -> h.getDatePanne().equals(reservation.getDate()))
+                .findFirst()
+                .orElse(null);
+
+        if (targetHistory != null) {
+            historyRestClient.deleteHistory(targetHistory.getId());
+            carHistories.remove(targetHistory);
+        }
+
+        if (carHistories.isEmpty()) {
+            carRestClient.deleteCar(carId);
+        }
+
+        reservationRepository.deleteById(reservationId);
     }
+
 
     public Page<ReservationResponseDto> getAllReservationsPaginated(int page, int size,String search) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());

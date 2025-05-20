@@ -95,4 +95,9 @@ public class BreakdownHistoryService {
             return breakdownHistoryDto;
         });
     }
+    public List<BreakdownHistoryDto> getBreakdownHistoriesByCarId(Long carId) {
+        List<BreakdownHistory> histories = repository.findByCarId(carId);
+        return BreakdownHistoryMapper.toDto(histories);
+    }
+
 }

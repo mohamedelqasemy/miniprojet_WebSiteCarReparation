@@ -78,4 +78,10 @@ public class BreakdownHistoryRestController {
         return ResponseEntity.ok(breaks);
     }
 
+    @GetMapping("/by-car/{carId}")
+    public ResponseEntity<List<BreakdownHistoryDto>> getHistoriesByCarId(@PathVariable Long carId) {
+        List<BreakdownHistoryDto> histories = breakdownHistoryService.getBreakdownHistoriesByCarId(carId);
+        return ResponseEntity.ok(histories);
+    }
+
 }

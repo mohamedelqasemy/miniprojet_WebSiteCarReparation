@@ -11,4 +11,5 @@ import java.util.List;
 public interface BreakdownHistoryRepository extends JpaRepository<BreakdownHistory, Long> {
     Page<BreakdownHistory> findByCarId(Long carId, Pageable pageable);
     List<BreakdownHistory> findByIsRepairedTrue();
+    List<BreakdownHistory> findByCarId(Long carId);
 }
