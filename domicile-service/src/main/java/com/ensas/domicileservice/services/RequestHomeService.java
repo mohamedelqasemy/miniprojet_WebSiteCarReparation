@@ -38,14 +38,14 @@ public class RequestHomeService {
     private final UserRestClient userRestClient;
     private final CarRestClient carRestClient;
     private final ServiceRestClient serviceRestClient;
-    private final HistoryRestClient historyRestClient;
+//    private final HistoryRestClient historyRestClient;
 
-    public RequestHomeService(RequestHomeRepository requestHomeRepository, UserRestClient userRestClient, CarRestClient carRestClient, ServiceRestClient serviceRestClient,HistoryRestClient historyRestClient) {
+    public RequestHomeService(RequestHomeRepository requestHomeRepository, UserRestClient userRestClient, CarRestClient carRestClient, ServiceRestClient serviceRestClient) {
         this.requestHomeRepository = requestHomeRepository;
         this.userRestClient = userRestClient;
         this.carRestClient = carRestClient;
         this.serviceRestClient = serviceRestClient;
-        this.historyRestClient = historyRestClient;
+//        this.historyRestClient = historyRestClient;
     }
     
     public List<RequestHomeDto> getAllRequestHome(){
@@ -95,14 +95,14 @@ public class RequestHomeService {
         }
         newReservation.setCarId(carId);
 
-        BreakdownHistoryDto newHistory = BreakdownHistoryDto.builder()
-                .carId(carId)
-                .datePanne(reservation.getDate())
-                .isRepaired(false)
-                .nomPanne("fin njibo smiyat les pannes a drari")
-                .description("o htta desc")
-                .build();
-        BreakdownHistoryDto createdHistory = historyRestClient.createBreakdownHistory(newHistory);
+//        BreakdownHistoryDto newHistory = BreakdownHistoryDto.builder()
+//                .carId(carId)
+//                .datePanne(reservation.getDate())
+//                .isRepaired(false)
+//                .nomPanne("fin njibo smiyat les pannes a drari")
+//                .description("o htta desc")
+//                .build();
+//        BreakdownHistoryDto createdHistory = historyRestClient.createBreakdownHistory(newHistory);
         return requestHomeRepository.save(newReservation);
     }
 

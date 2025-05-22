@@ -4,11 +4,13 @@ import com.ensas.carservice.dtos.CarDto;
 import com.ensas.carservice.entities.Car;
 import com.ensas.carservice.mappers.CarMapper;
 import com.ensas.carservice.repositories.CarRepository;
+import com.ensas.carservice.util.CarSpecification;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -91,10 +93,14 @@ public class CarService {
                 .build();
     }
 
-    public Page<CarDto> getAllCarsPaginated(int page, int size) {
+    public Page<CarDto> getAllCarsPaginated(int page, int size, String search) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending()); // ou autre tri
-        return carRepository.findAll(pageable)
-                .map(CarMapper::toCarDto);
+
+        Specification<Car> spec = Specification.where(null);
+        spec = spec.and(CarSpecification.hasName(search));
+
+        return carRepository.findAll(spec, pageable).map(CarMapper::toCarDto);
+
     }
 
     public Long getCarByLicensePlate(String licensePlate) {

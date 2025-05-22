@@ -35,8 +35,9 @@ public class CarRestController {
     @GetMapping("/paginated")
     public ResponseEntity<Page<CarDto>> getAllCars(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Page<CarDto> cars = carService.getAllCarsPaginated(page, size);
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search) {
+        Page<CarDto> cars = carService.getAllCarsPaginated(page, size,search);
         return ResponseEntity.ok(cars);
     }
 

@@ -94,14 +94,14 @@ public class ReservationService {
         }
         newReservation.setCarId(carId);
 
-        BreakdownHistoryDto newHistory = BreakdownHistoryDto.builder()
-                .carId(carId)
-                .datePanne(reservation.getDate())
-                .isRepaired(false)
-                .nomPanne("fin njibo smiyat les pannes a drari")
-                .description("o htta desc")
-                .build();
-        BreakdownHistoryDto createdHistory = historyRestClient.createBreakdownHistory(newHistory);
+//        BreakdownHistoryDto newHistory = BreakdownHistoryDto.builder()
+//                .carId(carId)
+//                .datePanne(reservation.getDate())
+//                .isRepaired(false)
+//                .nomPanne("fin njibo smiyat les pannes a drari")
+//                .description("o htta desc")
+//                .build();
+//        BreakdownHistoryDto createdHistory = historyRestClient.createBreakdownHistory(newHistory);
 
 
         return reservationRepository.save(newReservation);
