@@ -9,6 +9,7 @@ import com.ensas.equipementservice.services.EquipmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -68,16 +69,19 @@ public class EquipmentRestController {
         return ResponseEntity.ok(equipment);
     }
 
+    @PreAuthorize("hasAuthority('SUPER ADMIN')")
     @PostMapping
     public ResponseEntity<EquipmentDto> createEquipment(@RequestBody EquipmentDto equipmentDto) {
         return ResponseEntity.ok(equipmentService.createEquipment(equipmentDto));
     }
 
+    @PreAuthorize("hasAuthority('SUPER ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEquipment(@PathVariable("id") Long id) {
         equipmentService.deleteEquipment(id);
         return ResponseEntity.noContent().build();
     }
+    @PreAuthorize("hasAuthority('SUPER ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<EquipmentDto> updateEquipment(@PathVariable("id") Long id, @RequestBody EquipmentDto equipmentDto) {
         EquipmentDto equipment= equipmentService.updateEquipment(id, equipmentDto);
@@ -98,7 +102,7 @@ public class EquipmentRestController {
         return ResponseEntity.ok(equipments);
     }
 
-
+    @PreAuthorize("hasAuthority('SUPER ADMIN')")
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<String> uploadImage(
             @PathVariable Long id,

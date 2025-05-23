@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class BreakdownHistoryRestController {
         return ResponseEntity.ok(histories);
 
     }
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<BreakdownHistoryDto> getBreakdownHistoryById(@PathVariable("id") Long id) {
         BreakdownHistoryDto history = breakdownHistoryService.getBreakdownHistoryById(id);
@@ -41,24 +43,28 @@ public class BreakdownHistoryRestController {
         return ResponseEntity.ok(history);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN','INTERNAL')")
     @PostMapping
     public ResponseEntity<BreakdownHistoryDto> createBreakdownHistory(@RequestBody BreakdownHistoryDto historyDto) {
         BreakdownHistoryDto createdHistory = breakdownHistoryService.createBreakdownHistory(historyDto);
         return ResponseEntity.ok(createdHistory);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<BreakdownHistoryDto> updateHistory(@PathVariable("id") Long id, @RequestBody BreakdownHistoryDto historyDto) {
         BreakdownHistoryDto updatedHistory = breakdownHistoryService.updateBreakdownHistory(id, historyDto);
         return ResponseEntity.ok(updatedHistory);
     }
 
+    @PreAuthorize("hasAuthority('INTERNAL')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteHistory(@PathVariable("id") Long id) {
         breakdownHistoryService.deleteBreakdownHistory(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN')")
     @GetMapping("/paginated")
     public ResponseEntity<Page<BreakdownHistoryDto>> getAllBreaksPaginated(
             @RequestParam(defaultValue = "0") int page,
@@ -68,6 +74,7 @@ public class BreakdownHistoryRestController {
         return ResponseEntity.ok(breaks);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN')")
     @GetMapping("/paginated/{carId}")
     public ResponseEntity<Page<BreakdownHistoryDto>> getBreaksPaginatedByCarId(
             @PathVariable("carId") Long carId,
@@ -78,6 +85,7 @@ public class BreakdownHistoryRestController {
         return ResponseEntity.ok(breaks);
     }
 
+    @PreAuthorize("hasAuthority('INTERNAL')")
     @GetMapping("/by-car/{carId}")
     public ResponseEntity<List<BreakdownHistoryDto>> getHistoriesByCarId(@PathVariable Long carId) {
         List<BreakdownHistoryDto> histories = breakdownHistoryService.getBreakdownHistoriesByCarId(carId);

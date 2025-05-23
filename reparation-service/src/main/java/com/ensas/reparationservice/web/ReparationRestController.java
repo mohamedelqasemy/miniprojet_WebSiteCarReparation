@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,12 +25,15 @@ public class ReparationRestController {
     private final CloudinaryService cloudinaryService;
     private final ReparationRepository reparationRepository;
 
+
     //get all reparations
     @GetMapping
     public ResponseEntity<List<ReparationDto>> getAllReparations(){
         List<ReparationDto> reparationDtoList = reparationService.getAllReparations();
         return ResponseEntity.ok(reparationDtoList);
     }
+
+
 
     @GetMapping("/paginated")
     public ResponseEntity<Page<ReparationDto>> getPaginatedReparations(
@@ -38,6 +42,7 @@ public class ReparationRestController {
         Page<ReparationDto> pageResult = reparationService.getPaginatedReparations(page, size);
         return ResponseEntity.ok(pageResult);
     }
+
 
     @GetMapping("/filtered/paginated")
     public ResponseEntity<Page<ReparationDto>> getPaginatedReparations(
@@ -48,6 +53,7 @@ public class ReparationRestController {
         Page<ReparationDto> pageResult = reparationService.getFilterdPaginatedReparations(page, size, typeService);
         return ResponseEntity.ok(pageResult);
     }
+
 
     @GetMapping("/search")
     public ResponseEntity<Page<ReparationDto>> searchReparations(
@@ -61,6 +67,7 @@ public class ReparationRestController {
     }
 
 
+    @PreAuthorize("hasAuthority('INTERNAL')")
     //get a specific reparation
     @GetMapping("/{id}")
     public ResponseEntity<ReparationDto> getReparationById(@PathVariable("id") Long id){
@@ -68,6 +75,7 @@ public class ReparationRestController {
         return ResponseEntity.ok(reparationDto);
     }
 
+    @PreAuthorize("hasAuthority('SUPER ADMIN')")
     //create a reparation
     @PostMapping
     public ResponseEntity<ReparationDto> createReparation(@RequestBody ReparationDto reparationDto){
@@ -75,6 +83,7 @@ public class ReparationRestController {
         return ResponseEntity.ok(reparation);
     }
 
+    @PreAuthorize("hasAuthority('SUPER ADMIN')")
     @Transactional
     //update a reparation that exists.
     @PutMapping("/{id}")
@@ -83,6 +92,7 @@ public class ReparationRestController {
         return ResponseEntity.ok(reparation);
     }
 
+    @PreAuthorize("hasAuthority('SUPER ADMIN')")
     //delete a reparation that exists
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReparation (@PathVariable("id") Long id){
@@ -90,6 +100,7 @@ public class ReparationRestController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAuthority('SUPER ADMIN')")
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<String> uploadImage(
             @PathVariable Long id,

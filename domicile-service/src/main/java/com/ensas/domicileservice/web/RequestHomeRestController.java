@@ -12,6 +12,7 @@ import com.ensas.domicileservice.services.RequestHomeService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,15 +24,16 @@ public class RequestHomeRestController {
     private final RequestHomeService requestHomeService;
     private final UserRestClient userRestClient;
 
-
-    //create a car
+    @PreAuthorize("hasAuthority('USER')")
+    //create a home req
     @PostMapping
     public ResponseEntity<RequestHome> createRequestHome(@RequestBody RequestHomeRequest requestHomeRequest) {
         RequestHome request=requestHomeService.createRequestHome(requestHomeRequest);
         return ResponseEntity.ok(request);
     }
 
-    //get all cars
+
+    //get all req
     @GetMapping
     public ResponseEntity<List<RequestHomeDto>> getAllRequestsHome() {
         List<RequestHomeDto> requestHomeDtoList = requestHomeService.getAllRequestHome();
@@ -60,6 +62,7 @@ public class RequestHomeRestController {
         return ResponseEntity.ok(request);
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     //delete a car that exists .
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRequestHome(@PathVariable("id") Long id) {
@@ -68,6 +71,8 @@ public class RequestHomeRestController {
     }
 
 
+
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN')")
     @GetMapping("/paginated")
     public ResponseEntity<Page<RequestHomeResponse>> getAllRequestPaginated(
             @RequestParam(defaultValue = "0") int page,
@@ -78,6 +83,8 @@ public class RequestHomeRestController {
         return ResponseEntity.ok(requests);
     }
 
+
+    @PreAuthorize("hasAuthority('USER')")
     //blocked days
     @GetMapping("/blocked-dates")
     public List<String> getBlockedDatesFromTomorrow(

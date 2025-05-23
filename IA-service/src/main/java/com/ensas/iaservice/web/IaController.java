@@ -1,6 +1,7 @@
 package com.ensas.iaservice.web;
 
 import com.ensas.iaservice.services.IaService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ public class IaController {
     public IaController(IaService iaService) {
         this.iaService = iaService;
     }
+
 
     @PostMapping("/predict")
     public ResponseEntity<?> predict(@RequestParam("image") MultipartFile image) {

@@ -4,6 +4,7 @@ import com.ensas.commandservice.dtos.ChartPointDto;
 import com.ensas.commandservice.services.CommandService;
 import com.ensas.commandservice.services.CommandeServiceStats;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/stats")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('INTERNAL')")
 public class CommandStatsController {
 
     private final CommandeServiceStats commandeServiceStats;

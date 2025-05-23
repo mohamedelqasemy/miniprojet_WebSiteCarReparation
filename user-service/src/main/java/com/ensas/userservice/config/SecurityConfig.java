@@ -33,9 +33,6 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .headers(h -> h.frameOptions(fo -> fo.disable()))
                 .authorizeHttpRequests(ar -> ar
-                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/by-username/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
                         .anyRequest().authenticated()  // 🔒 Require authentication for all other requests
                 )
                 .oauth2ResourceServer(o2 -> o2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter)))

@@ -1,5 +1,6 @@
 package com.ensas.reservationservice.feign;
 
+import com.ensas.reservationservice.config.FeignClientConfig;
 import com.ensas.reservationservice.model.BreakdownHistoryDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient("historique-pannes-service")
+@FeignClient(name = "historique-pannes-service",configuration = FeignClientConfig.class)
 public interface HistoryRestClient {
     @PostMapping("/histories")
     BreakdownHistoryDto createBreakdownHistory(@RequestBody BreakdownHistoryDto historyDto);

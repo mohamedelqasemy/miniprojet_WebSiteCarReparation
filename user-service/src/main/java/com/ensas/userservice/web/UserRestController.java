@@ -22,13 +22,14 @@ import java.util.List;
 public class UserRestController {
     private UserService userService;
 
+    @PreAuthorize("hasAuthority('INTERNAL')")
     //create a user
     @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
         UserDto user=userService.createUser(userDto);
         return ResponseEntity.ok(user);
     }
-
+    @PreAuthorize("hasAuthority('INTERNAL')")
     //get all users
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
@@ -46,7 +47,7 @@ public class UserRestController {
     }
 
 
-
+    @PreAuthorize("hasAuthority('INTERNAL')")
     //get a specific user
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long id) {
@@ -76,6 +77,7 @@ public class UserRestController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAuthority('INTERNAL')")
     @GetMapping("/{id}/exists")
     public Boolean checkUserExists(@PathVariable Long id) {
         System.out.println("==== checkUserExists ====");
@@ -92,7 +94,7 @@ public class UserRestController {
         Page<UserDto> users = userService.getAllUsersPaginated(page, size,search);
         return ResponseEntity.ok(users);
     }
-
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN')")
     @GetMapping("/filtered/paginated")
     public ResponseEntity<Page<UserDto>> getFilteredUsersPaginated(
             @RequestParam int page,
@@ -119,6 +121,7 @@ public class UserRestController {
         return ResponseEntity.ok(imageUrl);
     }
 
+    @PreAuthorize("hasAuthority('INTERNAL')")
     @GetMapping("/by-username/{email}")
     public UserDto getUserByEmail(@PathVariable String email) {
         UserDto userDto = userService.getUserByEmail(email);

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 public class CommandRestController {
     private final CommandService commandService;
 
+    @PreAuthorize("hasAuthority('USER')")
     // Créer une commande
     @PostMapping
     public ResponseEntity<CommandDto> createCommand(@RequestBody CommandDto commandDto) {
@@ -25,6 +27,7 @@ public class CommandRestController {
                 .body(createdCommand);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN')")
     // Obtenir toutes les commandes avec pagination
     @GetMapping
     public ResponseEntity<Page<CommandDto>> getAllCommands(
@@ -36,6 +39,7 @@ public class CommandRestController {
     }
 
     // Obtenir une commande spécifique par ID
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<CommandDto> getCommand(@PathVariable("id") Long id) {
         CommandDto commandDto = commandService.getCommandById(id);
@@ -43,6 +47,7 @@ public class CommandRestController {
     }
 
     // Mettre à jour une commande
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<CommandDto> updateCommand(@PathVariable("id") Long id, @RequestBody CommandDto commandDto) {
         CommandDto updatedCommand = commandService.updateCommand(id, commandDto);
@@ -56,6 +61,7 @@ public class CommandRestController {
         return ResponseEntity.noContent().build(); // Retourne un statut 204 No Content
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     // Obtenir les commandes d'un utilisateur par ID
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<CommandDto>> getCommandsByUserId(@PathVariable("userId") Long userId) {
@@ -63,6 +69,7 @@ public class CommandRestController {
         return ResponseEntity.ok(commands);
     }
 
+    @PreAuthorize("hasAuthority('User')")
     @GetMapping("/user/{userId}/paginated")
     public ResponseEntity<Page<CommandDto>> getCommandsByUserIdPaginated(
             @PathVariable("userId") Long userId,

@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class KeycloakAdminClient {
+public class KeycloakTokenProvider {
 
     @Value("${keycloak.auth-server-url}")
     private String keycloakUrl;

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,11 +22,13 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     //new reservation
+    @PreAuthorize("hasAuthority('USER')")
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody ReservationRequest reservationRequest) {
         Reservation reservation = reservationService.createReservation(reservationRequest);
         return ResponseEntity.ok(reservation);
     }
+
 
     //get all reservations
     @GetMapping
@@ -33,6 +36,7 @@ public class ReservationController {
         List<Reservation> reservations = reservationService.getAllReservations();
         return ResponseEntity.ok(reservations);
     }
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN')")
     @GetMapping("/paginated")
     public ResponseEntity<Page<ReservationResponseDto>> getAllReservationsPaginated(
             @RequestParam(defaultValue = "0") int page,
@@ -43,6 +47,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservations);
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/user/{userId}/paginated")
     public Page<ReservationResponseDto> getClientReservations(
             @PathVariable("userId") Long userId,
@@ -53,6 +58,7 @@ public class ReservationController {
         return reservationService.getReservationsByClient(userId, pageable);
     }
 
+    @PreAuthorize("hasAuthority('INTERNAL')")
     //gat a specific reservation
     @GetMapping("/{id}")
     public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
@@ -69,6 +75,7 @@ public class ReservationController {
         return ResponseEntity.ok(updatedReservation);
     }
 
+    @PreAuthorize("hasAnyAuthority('USER','INTERNAL')")
     //delete a reservation
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
@@ -76,6 +83,7 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     //blocked days
     @GetMapping("/blocked-dates")
     public List<String> getBlockedDatesFromTomorrow(

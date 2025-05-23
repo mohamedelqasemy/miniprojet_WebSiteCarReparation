@@ -7,6 +7,7 @@ import com.ensas.carservice.services.CarService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class CarRestController {
 
 
     //create a car
+    @PreAuthorize("hasAnyAuthority('INTERNAL','USER')")
     @PostMapping
     public ResponseEntity<CarDto> createCar(@RequestBody CarDto carDto) {
         CarDto car=carService.createCar(carDto);
@@ -27,11 +29,13 @@ public class CarRestController {
     }
 
     //get all cars
+    @PreAuthorize("hasAuthority('INTERNAL')")
     @GetMapping
     public ResponseEntity<List<CarDto>> getAllCars() {
         List<CarDto> carDtoList = carService.getAllCars();
         return ResponseEntity.ok(carDtoList);
     }
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN')")
     @GetMapping("/paginated")
     public ResponseEntity<Page<CarDto>> getAllCars(
             @RequestParam(defaultValue = "0") int page,
@@ -41,6 +45,7 @@ public class CarRestController {
         return ResponseEntity.ok(cars);
     }
 
+    @PreAuthorize("hasAuthority('INTERNAL')")
     //get a specific car
     @GetMapping("/{id}")
     public ResponseEntity<CarDto> getCarById(@PathVariable("id") Long id) {
@@ -56,14 +61,14 @@ public class CarRestController {
         CarDto car = carService.updateCar(id,carDto);
         return ResponseEntity.ok(car);
     }
-
+    @PreAuthorize("hasAnyAuthority('INTERNAL','USER')")
     //delete a car that exists .
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCar(@PathVariable("id") Long id) {
         carService.deleteCar(id);
         return ResponseEntity.noContent().build();
     }
-
+    @PreAuthorize("hasAuthority('INTERNAL')")
     @GetMapping("/id-by-license")
     public ResponseEntity<Long> getCarIdByLicensePlate(@RequestParam String licensePlate) {
         Long carId = carService.getCarByLicensePlate(licensePlate);

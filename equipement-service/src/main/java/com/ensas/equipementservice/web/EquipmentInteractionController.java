@@ -15,6 +15,7 @@ import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -31,6 +32,7 @@ public class EquipmentInteractionController {
     private final CommentRepository commentRepository;
     private final EquipmentService equipmentService;
 
+    @PreAuthorize("hasAuthority('USER')")
     @PostMapping("/rate")
     public ResponseEntity<ResponseMessageDto> addRating(@RequestBody RatingRequestDto dto) {
         // Vérifier si l'utilisateur existe en appelant le Feign Client
@@ -57,6 +59,7 @@ public class EquipmentInteractionController {
         return ResponseEntity.ok(new ResponseMessageDto("Rating added successfully", true));
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @PostMapping("/comment")
     public ResponseEntity<ResponseMessageDto> addComment(@RequestBody CommentRequestDto dto) {
         // Vérifier si l'utilisateur existe en appelant le Feign Client
