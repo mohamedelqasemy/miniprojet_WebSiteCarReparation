@@ -39,7 +39,7 @@ public class GarageRestController {
         return ResponseEntity.ok(garageService.getFilteredGarages(keyword, page, size));
     }
 
-    @PreAuthorize("hasAuthority('INTERNAL')")
+
     @GetMapping("/{garageId}")
     public ResponseEntity<GarageDto> getGarageById(@PathVariable Long garageId) {
         return garageService.getGarageById(garageId);

@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/garages").permitAll()
                         .requestMatchers(HttpMethod.GET,"/garages/filtered/paginated").permitAll()
                         .requestMatchers(HttpMethod.GET,"/garages/filtered/paginated/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/garages/*").permitAll()
                         .anyRequest().authenticated()  // 🔒 Require authentication for all other requests
                 )
                 .oauth2ResourceServer(o2 -> o2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter)))
