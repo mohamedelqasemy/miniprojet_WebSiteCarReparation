@@ -23,24 +23,24 @@ public class HistoriquePannesServiceApplication {
     }
 
 
-    @Bean
-    CommandLineRunner commandLineRunner(BreakdownHistoryRepository breakdownHistoryRepository,
-                                        CarRestClient carRestClient){
-
-        return args -> {
-            Collection<CarDto> cars = carRestClient.getAllCars();
-            System.out.println(cars.size());
-
-            cars.forEach(car -> {
-                BreakdownHistory history = BreakdownHistory.builder()
-                        .datePanne(new Date())
-                        .isRepaired(false)
-                        .nomPanne("panne dans le batterie")
-                        .description("une défaillance des cellules ou du circuit de gestion (BMS)")
-                        .carId(car.getId())
-                        .build();
-                breakdownHistoryRepository.save(history);
-            });
-        };
-    }
+//    @Bean
+//    CommandLineRunner commandLineRunner(BreakdownHistoryRepository breakdownHistoryRepository,
+//                                        CarRestClient carRestClient){
+//
+//        return args -> {
+//            Collection<CarDto> cars = carRestClient.getAllCars();
+//            System.out.println(cars.size());
+//
+//            cars.forEach(car -> {
+//                BreakdownHistory history = BreakdownHistory.builder()
+//                        .datePanne(new Date())
+//                        .isRepaired(false)
+//                        .nomPanne("panne dans le batterie")
+//                        .description("une défaillance des cellules ou du circuit de gestion (BMS)")
+//                        .carId(car.getId())
+//                        .build();
+//                breakdownHistoryRepository.save(history);
+//            });
+//        };
+//    }
 }

@@ -23,24 +23,24 @@ public class PaiementServiceApplication {
         SpringApplication.run(PaiementServiceApplication.class, args);
     }
 
-    @Bean
-    CommandLineRunner commandLineRunner(PaymentRepository paymentRepository,
-                                        UserRestClient userRestClient){
-
-        return args -> {
-            Collection<UserDto> users = userRestClient.getAllUsers().getContent();
-
-
-            users.forEach(user -> {
-                Payment payment = Payment.builder()
-                        .Type("carte")
-                        .Amount(100.00)
-                        .Date(new Date())
-                        .userId(user.getId())
-                        .build();
-                paymentRepository.save(payment);
-            });
-        };
-    }
+//    @Bean
+//    CommandLineRunner commandLineRunner(PaymentRepository paymentRepository,
+//                                        UserRestClient userRestClient){
+//
+//        return args -> {
+//            Collection<UserDto> users = userRestClient.getAllUsers().getContent();
+//
+//
+//            users.forEach(user -> {
+//                Payment payment = Payment.builder()
+//                        .Type("carte")
+//                        .Amount(100.00)
+//                        .Date(new Date())
+//                        .userId(user.getId())
+//                        .build();
+//                paymentRepository.save(payment);
+//            });
+//        };
+//    }
 
 }

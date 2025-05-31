@@ -87,6 +87,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version> <!-- Ou dernière version stable -->
+        </dependency>
+
         <!-- Dépendance pour les tests unitaires -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
