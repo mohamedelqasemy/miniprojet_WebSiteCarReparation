@@ -116,4 +116,25 @@ public class KeycloakAdminClient {
         }
         throw new RuntimeException("Rôle non trouvé dans Keycloak.");
     }
+
+    public void markEmailVerified(String email) {
+        String accessToken = getAccessToken();
+        String userId = getUserIdByEmail(email);
+
+        String url = keycloakUrl + "/admin/realms/" + realm + "/users/" + userId;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Construire la représentation mise à jour de l'utilisateur
+        Map<String, Object> updatePayload = new HashMap<>();
+        updatePayload.put("emailVerified", true);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(updatePayload, headers);
+
+        restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
+    }
+
+
 }

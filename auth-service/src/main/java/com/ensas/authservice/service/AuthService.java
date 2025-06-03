@@ -20,10 +20,17 @@ import java.util.Map;
 
 
 @Service
-@RequiredArgsConstructor
+
 public class AuthService {
     private final UserServiceClient userServiceClient;
     private final KeycloakAdminClient keycloakAdminClient;
+    private final EmailVerificationService emailVerificationService;
+
+    public AuthService(UserServiceClient userServiceClient, KeycloakAdminClient keycloakAdminClient, EmailVerificationService emailVerificationService) {
+        this.userServiceClient = userServiceClient;
+        this.keycloakAdminClient = keycloakAdminClient;
+        this.emailVerificationService = emailVerificationService;
+    }
 
     public void register(SignupRequest request) {
         // 1. Créer l'utilisateur dans Keycloak et récupérer son ID
@@ -46,6 +53,7 @@ public class AuthService {
                 .build();
 
         userServiceClient.createUser(userDto);
+        emailVerificationService.generateAndSendToken(request.getEmail());
     }
 
     public JwtResponse login(LoginRequest request) {

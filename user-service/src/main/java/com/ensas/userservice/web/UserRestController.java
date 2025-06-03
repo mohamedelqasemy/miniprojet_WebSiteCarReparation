@@ -1,7 +1,10 @@
 package com.ensas.userservice.web;
 
+import com.ensas.userservice.dtos.EmailDto;
 import com.ensas.userservice.dtos.PasswordChangeRequest;
 import com.ensas.userservice.dtos.UserDto;
+import com.ensas.userservice.entities.User;
+import com.ensas.userservice.repositories.UserRepository;
 import com.ensas.userservice.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -21,7 +25,7 @@ import java.util.List;
 @AllArgsConstructor()
 public class UserRestController {
     private UserService userService;
-
+    private UserRepository userRepository;
     @PreAuthorize("hasAuthority('INTERNAL')")
     //create a user
     @PostMapping
@@ -51,6 +55,12 @@ public class UserRestController {
     //get a specific user
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long id) {
+        UserDto userDto = userService.getUserById(id);
+        return ResponseEntity.ok(userDto);
+    }
+    @PreAuthorize("hasAnyAuthority('USER')")
+    @GetMapping("/info/{id}")
+    public ResponseEntity<UserDto> getUserInformationById(@PathVariable("id") Long id) {
         UserDto userDto = userService.getUserById(id);
         return ResponseEntity.ok(userDto);
     }
@@ -131,6 +141,20 @@ public class UserRestController {
     public Authentication authentication(Authentication authentication) {
         return authentication;
     }
+
+    @PutMapping("/verify-email")
+    public ResponseEntity<Void> verifyEmail(@RequestBody EmailDto body) {
+        String email = body.getEmail();
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            User u = userOpt.get();
+            u.setEnabled(true);
+            userRepository.save(u);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 
 }
 
