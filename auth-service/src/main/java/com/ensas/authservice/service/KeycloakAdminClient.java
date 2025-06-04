@@ -65,7 +65,7 @@ public class KeycloakAdminClient {
     }
 
     // Récupérer l'ID utilisateur à partir de son email
-    private String getUserIdByEmail(String email) {
+    public String getUserIdByEmail(String email) {
         String accessToken = getAccessToken();
         String url = keycloakUrl + "/admin/realms/" + realm + "/users?username=" + email;
 
@@ -133,6 +133,28 @@ public class KeycloakAdminClient {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(updatePayload, headers);
 
+        restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
+    }
+
+    public void resetPassword(String userId, String newPassword, boolean temporary) {;
+        resetPasswordInternal(userId, newPassword, temporary);
+    }
+
+    // --- 5) Méthode interne pour faire l'appel Keycloak /reset-password ---
+    private void resetPasswordInternal(String userId, String newPassword, boolean temporary) {
+        String accessToken = getAccessToken();
+        String url = keycloakUrl + "/admin/realms/" + realm + "/users/" + userId + "/reset-password";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> credential = new HashMap<>();
+        credential.put("type", "password");
+        credential.put("value", newPassword);
+        credential.put("temporary", temporary);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(credential, headers);
         restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
     }
 

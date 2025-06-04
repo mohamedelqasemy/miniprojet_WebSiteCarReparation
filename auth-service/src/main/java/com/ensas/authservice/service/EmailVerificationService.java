@@ -39,7 +39,7 @@ public class EmailVerificationService {
 
     private void sendEmail(String to, String token) {
         String subject = "Vérification de votre adresse email";
-        String url = frontendBaseUrl + "/verify-email?token=" + token;
+        String url = frontendBaseUrl + "/auth/verify-email?token=" + token;
         String body = "Bonjour,\n\nCliquez sur ce lien pour vérifier votre adresse email :\n" + url;
 
         SimpleMailMessage message = new SimpleMailMessage();
@@ -50,9 +50,7 @@ public class EmailVerificationService {
     }
 
     public boolean verifyToken(String token) {
-        System.out.println("Token from verify token: "+token);
         Optional<VerificationToken> optionalToken = tokenRepository.findByToken(token);
-        System.out.println("optionalToken : "+optionalToken);
         if (optionalToken.isPresent() && optionalToken.get().getExpiryDate().isAfter(LocalDateTime.now())) {
             //tokenRepository.deleteById(token); // Supprimer le token après vérification
             return true;
@@ -63,13 +61,5 @@ public class EmailVerificationService {
     public String getEmailFromToken(String token) {
         return tokenRepository.findByToken(token).map(VerificationToken::getEmail).orElse(null);
     }
-
-//    @PostConstruct
-//    public void debugDatabaseAccess() {
-//        System.out.println(">>> DEBUG VerificationTokenRepository.findAll():");
-//        tokenRepository.findAll().forEach(token -> {
-//            System.out.println("Token: " + token.getToken() + ", Email: " + token.getEmail() + ", Expiry: " + token.getExpiryDate());
-//        });
-//    }
 
 }
