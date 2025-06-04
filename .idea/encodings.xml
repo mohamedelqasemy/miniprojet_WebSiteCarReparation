@@ -13,6 +13,7 @@
     <file url="file://$PROJECT_DIR$/garage-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/gateway-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/historique-pannes-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/notification-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/paiement-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/reparation-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/reservation-service/src/main/java" charset="UTF-8" />
