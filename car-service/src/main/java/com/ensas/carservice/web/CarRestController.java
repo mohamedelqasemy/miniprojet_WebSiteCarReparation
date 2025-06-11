@@ -2,7 +2,9 @@ package com.ensas.carservice.web;
 
 import com.ensas.carservice.clients.UserRestClient;
 import com.ensas.carservice.dtos.CarDto;
+import com.ensas.carservice.entities.Car;
 import com.ensas.carservice.models.User;
+import com.ensas.carservice.repositories.CarRepository;
 import com.ensas.carservice.services.CarService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,7 @@ import java.util.List;
 public class CarRestController {
     private final CarService carService;
     private final UserRestClient userRestClient;
+    private final CarRepository carRepository;
 
 
     //create a car
@@ -27,6 +30,16 @@ public class CarRestController {
         CarDto car=carService.createCar(carDto);
         return ResponseEntity.ok(car);
     }
+
+    //get userId by carId
+    @PreAuthorize("hasAuthority('INTERNAL')")
+    @GetMapping("/getUser/{id}")
+    public ResponseEntity<Long> getUser(@PathVariable long id) {
+        return carRepository.findById(id)
+                .map(car -> ResponseEntity.ok(car.getUserId()))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 
     //get all cars
     @PreAuthorize("hasAuthority('INTERNAL')")

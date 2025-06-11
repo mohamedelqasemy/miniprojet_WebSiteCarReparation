@@ -16,8 +16,9 @@ public class Notification {
     @Id @GeneratedValue
     private Long id;
     private String name;
+    private Long userId;
     private String user;
     private Date date;
-    private String car;
+    private String licensePlate;
     private boolean seen;
 }

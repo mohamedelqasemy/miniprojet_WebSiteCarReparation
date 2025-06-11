@@ -6,6 +6,7 @@ import com.ensas.historiquepannesservice.config.FeignClientConfig;
 import com.ensas.historiquepannesservice.models.CarDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -18,4 +19,7 @@ public interface CarRestClient {
 
     @GetMapping("/cars")
     List<CarDto> getAllCars();
+
+    @GetMapping("/getUser/{id}")
+    Long getUser(@PathVariable long id);
 }

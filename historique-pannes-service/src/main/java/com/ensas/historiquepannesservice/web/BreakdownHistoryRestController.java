@@ -2,8 +2,11 @@ package com.ensas.historiquepannesservice.web;
 
 import com.ensas.historiquepannesservice.dtos.BreakdownHistoryDto;
 import com.ensas.historiquepannesservice.feign.CarRestClient;
+import com.ensas.historiquepannesservice.feign.NotificationRestClient;
+import com.ensas.historiquepannesservice.feign.UserRestClient;
 import com.ensas.historiquepannesservice.mappers.CarMapper;
-import com.ensas.historiquepannesservice.models.Car;
+import com.ensas.historiquepannesservice.mappers.UserMapper;
+import com.ensas.historiquepannesservice.models.*;
 import com.ensas.historiquepannesservice.services.BreakdownHistoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -12,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -21,6 +25,8 @@ import java.util.List;
 public class BreakdownHistoryRestController {
     private BreakdownHistoryService breakdownHistoryService;
     private CarRestClient carRestClient;
+    private UserRestClient userRestClient;
+    private NotificationRestClient notificationRestClient;
 
     @GetMapping
     public ResponseEntity<List<BreakdownHistoryDto>> getBreakdownHistory() {
@@ -28,8 +34,9 @@ public class BreakdownHistoryRestController {
         histories.forEach(history -> {
             Car car = CarMapper.toCar(carRestClient.getCarById(history.getCarId()));
             history.setCar(CarMapper.toCarDto(car));
-
-                });
+            UserDto user = userRestClient.getUserById(history.getUserId());
+            history.setUser(user);
+        });
         return ResponseEntity.ok(histories);
 
     }
@@ -39,6 +46,8 @@ public class BreakdownHistoryRestController {
         BreakdownHistoryDto history = breakdownHistoryService.getBreakdownHistoryById(id);
         Car car = CarMapper.toCar(carRestClient.getCarById(history.getCarId()));
         history.setCar(CarMapper.toCarDto(car));
+        UserDto user = userRestClient.getUserById(history.getUserId());
+        history.setUser(user);
         System.out.println(carRestClient.getCarById(history.getCarId()).toString());
         return ResponseEntity.ok(history);
     }
@@ -46,6 +55,8 @@ public class BreakdownHistoryRestController {
     @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN','INTERNAL')")
     @PostMapping
     public ResponseEntity<BreakdownHistoryDto> createBreakdownHistory(@RequestBody BreakdownHistoryDto historyDto) {
+        Long userId = carRestClient.getUser(historyDto.getCarId());
+        historyDto.setUserId(userId);
         BreakdownHistoryDto createdHistory = breakdownHistoryService.createBreakdownHistory(historyDto);
         return ResponseEntity.ok(createdHistory);
     }
@@ -53,6 +64,11 @@ public class BreakdownHistoryRestController {
     @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<BreakdownHistoryDto> updateHistory(@PathVariable("id") Long id, @RequestBody BreakdownHistoryDto historyDto) {
+        CarDto car = carRestClient.getCarById(historyDto.getCarId());
+        UserDto user = userRestClient.getUserById(historyDto.getUserId());
+        ReservationNotification notif = new ReservationNotification("etat de votre voiture",user.getLastname(),historyDto.getUserId(),new Date(),car.getLicensePlate(), user.getEmail());
+        notificationRestClient.send(notif);
+
         BreakdownHistoryDto updatedHistory = breakdownHistoryService.updateBreakdownHistory(id, historyDto);
         return ResponseEntity.ok(updatedHistory);
     }

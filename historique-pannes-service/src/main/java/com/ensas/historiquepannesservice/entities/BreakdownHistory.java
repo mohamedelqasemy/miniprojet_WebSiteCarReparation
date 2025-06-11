@@ -1,6 +1,7 @@
 package com.ensas.historiquepannesservice.entities;
 
 import com.ensas.historiquepannesservice.models.Car;
+import com.ensas.historiquepannesservice.models.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,11 @@ public class BreakdownHistory {
     //relation with car
     private Long carId;
     @Transient private Car car;
+
+    //relation with user
+    private Long userId;
+    @Transient private User user;
+
 
 
 

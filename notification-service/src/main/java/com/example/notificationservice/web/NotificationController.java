@@ -13,6 +13,7 @@ import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQuerySer
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
@@ -33,11 +34,11 @@ public class NotificationController {
     public NotificationController(StreamBridge streamBridge) {
         this.streamBridge = streamBridge;
     }
+
     @GetMapping("/publish")
-    public ReservationNotification send(String name, String topic){
-        ReservationNotification event = new ReservationNotification(name, Math.random()>0.5?"U1":"U2", new Date(), "dacia");
-        streamBridge.send(topic, event);
-        return event;
+    public ReservationNotification send(@RequestBody ReservationNotification notification) {
+        streamBridge.send("T1", notification);
+        return notification;
     }
 
 

@@ -38,8 +38,8 @@ public class ReservationHandler {
     @Bean
     public Consumer<ReservationNotification> pageEventConsumer(){
         return input -> {
-            emailService.send("otmanekarym69@gmail.com", "Car Repair Update", input.name() + ": " + input.car() + " has been repaired.");
-            repo.save(new Notification(null, input.name(), input.user(), input.date(), input.car(), false));
+            emailService.send(input.email(), input.name(), ": Ta voiture qui a le numéro de matricule:  " + input.licensePlate() + "  a été réparée");
+            repo.save(new Notification(null, input.name(),input.userId(), input.user(), input.date(), input.licensePlate(), false));
         };
     }
 //    @Bean
