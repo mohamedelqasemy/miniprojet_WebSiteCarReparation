@@ -8,6 +8,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class CarDto {
     private Long id;
     private String licensePlate;

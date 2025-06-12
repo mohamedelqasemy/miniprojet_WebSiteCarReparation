@@ -14,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class BreakdownHistoryDto {
     private Long id;
     private Date datePanne;

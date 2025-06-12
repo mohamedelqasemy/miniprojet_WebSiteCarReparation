@@ -12,13 +12,16 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "notification")
 public class Notification {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // For PostgreSQL auto-increment
     private Long id;
     private String name;
+    @Column(name = "user_id")
     private Long userId;
-    private String user;
     private Date date;
+    @Column(name = "license_plate")
     private String licensePlate;
     private boolean seen;
 }

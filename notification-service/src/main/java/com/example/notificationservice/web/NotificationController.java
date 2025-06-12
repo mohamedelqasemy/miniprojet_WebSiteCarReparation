@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQueryService;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -35,7 +32,7 @@ public class NotificationController {
         this.streamBridge = streamBridge;
     }
 
-    @GetMapping("/publish")
+    @PostMapping("/publish")
     public ReservationNotification send(@RequestBody ReservationNotification notification) {
         streamBridge.send("T1", notification);
         return notification;
@@ -43,8 +40,8 @@ public class NotificationController {
 
 
     @GetMapping("/notifications")
-    public List<Notification> getNotifications(@RequestParam String user) {
-        return repo.findByUser(user);
+    public List<Notification> getNotifications(@RequestParam Long userId) {
+        return repo.findByUserId(userId);
     }
 
     @GetMapping(path = "/analytics",produces = MediaType.TEXT_EVENT_STREAM_VALUE)

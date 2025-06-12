@@ -3,9 +3,11 @@ package com.ensas.historiquepannesservice.services;
 import com.ensas.historiquepannesservice.dtos.BreakdownHistoryDto;
 import com.ensas.historiquepannesservice.entities.BreakdownHistory;
 import com.ensas.historiquepannesservice.feign.CarRestClient;
+import com.ensas.historiquepannesservice.feign.UserRestClient;
 import com.ensas.historiquepannesservice.mappers.BreakdownHistoryMapper;
 import com.ensas.historiquepannesservice.mappers.CarMapper;
 import com.ensas.historiquepannesservice.models.CarDto;
+import com.ensas.historiquepannesservice.models.UserDto;
 import com.ensas.historiquepannesservice.repositories.BreakdownHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,7 @@ public class BreakdownHistoryService {
     private final BreakdownHistoryRepository repository;
     private final BreakdownHistoryRepository breakdownHistoryRepository;
     private final CarRestClient carRestClient;
+    private final UserRestClient userRestClient;
 
     public List<BreakdownHistoryDto> getAllBreakdownHistory() {
         List<BreakdownHistory> breakdownHistories = repository.findAll();
@@ -89,9 +92,11 @@ public class BreakdownHistoryService {
         Page<BreakdownHistory> reservationPage = breakdownHistoryRepository.findByCarId(carId, pageable);
 
         return reservationPage.map(breakDown -> {
+            UserDto user = userRestClient.getUserById(breakDown.getUserId());
             CarDto car = carRestClient.getCarById(breakDown.getCarId());
             BreakdownHistoryDto breakdownHistoryDto = BreakdownHistoryMapper.toDto(breakDown);
             breakdownHistoryDto.setCar(car);
+            breakdownHistoryDto.setUser(user);
             return breakdownHistoryDto;
         });
     }

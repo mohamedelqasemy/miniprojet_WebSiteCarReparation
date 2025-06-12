@@ -20,6 +20,6 @@ public interface CarRestClient {
     @GetMapping("/cars")
     List<CarDto> getAllCars();
 
-    @GetMapping("/getUser/{id}")
+    @GetMapping("cars/getUser/{id}")
     Long getUser(@PathVariable long id);
 }

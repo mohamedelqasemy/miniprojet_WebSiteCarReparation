@@ -69,7 +69,7 @@ public class CommandRestController {
         return ResponseEntity.ok(commands);
     }
 
-    @PreAuthorize("hasAuthority('User')")
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/user/{userId}/paginated")
     public ResponseEntity<Page<CommandDto>> getCommandsByUserIdPaginated(
             @PathVariable("userId") Long userId,

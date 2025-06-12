@@ -32,8 +32,8 @@ public class KeycloakTokenProvider {
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "client_credentials");
-        params.add("client_id", "internal-service-client");
-        params.add("client_secret", "EDgVEOs4G9aIRMZ30ESI6CAVSVJww8Js");
+        params.add("client_id", clientId);
+        params.add("client_secret", clientSecret);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 

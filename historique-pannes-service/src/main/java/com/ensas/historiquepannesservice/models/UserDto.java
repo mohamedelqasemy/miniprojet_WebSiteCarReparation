@@ -9,6 +9,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter @Setter
 @Builder
+@ToString
 public class UserDto {
     private Long id;
     private String email;

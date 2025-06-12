@@ -9,6 +9,7 @@ import com.ensas.historiquepannesservice.mappers.UserMapper;
 import com.ensas.historiquepannesservice.models.*;
 import com.ensas.historiquepannesservice.services.BreakdownHistoryService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/histories")
@@ -64,9 +66,11 @@ public class BreakdownHistoryRestController {
     @PreAuthorize("hasAnyAuthority('ADMIN','SUPER ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<BreakdownHistoryDto> updateHistory(@PathVariable("id") Long id, @RequestBody BreakdownHistoryDto historyDto) {
-        CarDto car = carRestClient.getCarById(historyDto.getCarId());
-        UserDto user = userRestClient.getUserById(historyDto.getUserId());
-        ReservationNotification notif = new ReservationNotification("etat de votre voiture",user.getLastname(),historyDto.getUserId(),new Date(),car.getLicensePlate(), user.getEmail());
+       System.out.println("break: " + historyDto.toString());
+
+//        CarDto car = carRestClient.getCarById(historyDto.getCarId());
+//        UserDto user = userRestClient.getUserById(historyDto.getUserId());
+        ReservationNotification notif = new ReservationNotification("etat de votre voiture",historyDto.getUser().getLastname(),historyDto.getUserId(),new Date(),historyDto.getCar().getLicensePlate(), historyDto.getUser().getEmail());
         notificationRestClient.send(notif);
 
         BreakdownHistoryDto updatedHistory = breakdownHistoryService.updateBreakdownHistory(id, historyDto);
