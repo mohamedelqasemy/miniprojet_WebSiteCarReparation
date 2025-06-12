@@ -32,12 +32,18 @@ public class KeycloakTokenProvider {
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "client_credentials");
-        params.add("client_id", clientId);
-        params.add("client_secret", clientSecret);
+        params.add("client_id", "internal-service-client");
+        params.add("client_secret", "EDgVEOs4G9aIRMZ30ESI6CAVSVJww8Js");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
-        ResponseEntity<Map> response = restTemplate.postForEntity(tokenUri, request, Map.class);
-        return (String) response.getBody().get("access_token");
+        try {
+            ResponseEntity<Map> response = restTemplate.postForEntity(tokenUri, request, Map.class);
+            System.out.println("Keycloak Token Response: " + response.getBody());
+            return (String) response.getBody().get("access_token");
+        } catch (Exception e) {
+            System.err.println("Failed to get token from Keycloak: " + e.getMessage());
+            throw e;
+        }
     }
 }
