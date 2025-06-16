@@ -72,6 +72,8 @@ public class EquipmentService {
         equipement.setDescription(equipmentDto.getDescription());
         equipement.setPrice(equipmentDto.getPrice());
         equipement.setQuantity(equipmentDto.getQuantity());
+        equipement.setCar(equipmentDto.getCar());
+        equipement.setType(equipmentDto.getType());
 
         List<String> newImageLinks = equipmentDto.getImageLinks();
 
