@@ -58,7 +58,7 @@ public class UserRestController {
         UserDto userDto = userService.getUserById(id);
         return ResponseEntity.ok(userDto);
     }
-    @PreAuthorize("hasAnyAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'SUPER ADMIN')")
     @GetMapping("/info/{id}")
     public ResponseEntity<UserDto> getUserInformationById(@PathVariable("id") Long id) {
         UserDto userDto = userService.getUserById(id);
