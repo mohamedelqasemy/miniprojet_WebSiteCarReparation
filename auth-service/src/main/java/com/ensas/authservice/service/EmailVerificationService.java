@@ -30,9 +30,27 @@ public class EmailVerificationService {
         this.mailSender = mailSender;
     }
 
+    //    public String generateAndSendToken(String email) {
+//        String token = UUID.randomUUID().toString();
+//        tokenRepository.save(new VerificationToken(token, email, LocalDateTime.now().plusHours(24)));
+//        sendEmail(email, token);
+//        return token;
+//    }
     public String generateAndSendToken(String email) {
         String token = UUID.randomUUID().toString();
-        tokenRepository.save(new VerificationToken(token, email, LocalDateTime.now().plusHours(24)));
+        LocalDateTime expiryDate = LocalDateTime.now().plusHours(24);
+
+        Optional<VerificationToken> existingToken = tokenRepository.findByEmail(email);
+
+        if (existingToken.isPresent()) {
+            VerificationToken tokenEntity = existingToken.get();
+            tokenEntity.setToken(token);
+            tokenEntity.setExpiryDate(expiryDate);
+            tokenRepository.save(tokenEntity);
+        } else {
+            tokenRepository.save(new VerificationToken(token, email, expiryDate));
+        }
+
         sendEmail(email, token);
         return token;
     }

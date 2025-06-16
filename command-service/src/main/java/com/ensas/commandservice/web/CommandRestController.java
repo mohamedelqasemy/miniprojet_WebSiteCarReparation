@@ -1,6 +1,12 @@
 package com.ensas.commandservice.web;
 
+import com.ensas.commandservice.dtos.CommandDetailsDto;
 import com.ensas.commandservice.dtos.CommandDto;
+import com.ensas.commandservice.feign.EquipmentRestClient;
+import com.ensas.commandservice.feign.NotificationRestClient;
+import com.ensas.commandservice.feign.UserRestClient;
+import com.ensas.commandservice.models.EquipmentOrderNotification;
+import com.ensas.commandservice.models.User;
 import com.ensas.commandservice.services.CommandService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,12 +22,30 @@ import java.util.List;
 @AllArgsConstructor
 public class CommandRestController {
     private final CommandService commandService;
+    private final NotificationRestClient notificationRestClient;
+    private final UserRestClient userRestClient;
 
     @PreAuthorize("hasAuthority('USER')")
     // Créer une commande
     @PostMapping
     public ResponseEntity<CommandDto> createCommand(@RequestBody CommandDto commandDto) {
         CommandDto createdCommand = commandService.createCommand(commandDto);
+        User user = userRestClient.findUserById(createdCommand.getUserId());
+        // Transformer la liste des noms d’équipements
+        List<String> equipmentNames = createdCommand.getCommandDetails()
+                .stream()
+                .map(CommandDetailsDto::getEquipmentName)
+                .toList();
+        // Créer l’événement
+        EquipmentOrderNotification equipmentOrderNotification = new EquipmentOrderNotification(
+                createdCommand.getId(),
+                createdCommand.getUserId(),
+                user.getEmail(),
+                createdCommand.getDate(),
+                equipmentNames
+        );
+
+        this.notificationRestClient.send(equipmentOrderNotification);
         return ResponseEntity.status(HttpStatus.CREATED)  // Retourne un statut 201 Created
                 .header("Location", "/commands/" + createdCommand.getId())
                 .body(createdCommand);
