@@ -1,0 +1,16 @@
+package com.ensas.commandservice.feign;
+
+import com.ensas.commandservice.config.FeignClientConfig;
+import com.ensas.commandservice.models.User;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+@FeignClient(name = "user-service",configuration = FeignClientConfig.class)
+public interface UserRestClient {
+    @GetMapping("/users/{id}")
+    User findUserById(@PathVariable("id") Long id);
+    @GetMapping("/users")
+    List<User> findAllUsers();
+}

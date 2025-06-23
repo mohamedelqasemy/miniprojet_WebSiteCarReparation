@@ -1,6 +1,7 @@
 package com.example.notificationservice.web;
 
 import com.example.notificationservice.entities.Notification;
+import com.example.notificationservice.events.EquipmentOrderNotification;
 import com.example.notificationservice.events.ReservationNotification;
 import com.example.notificationservice.repositories.NotificationRepository;
 import org.apache.kafka.streams.KeyValue;
@@ -35,6 +36,11 @@ public class NotificationController {
     @PostMapping("/publish")
     public ReservationNotification send(@RequestBody ReservationNotification notification) {
         streamBridge.send("T1", notification);
+        return notification;
+    }
+    @PostMapping("/publish/commande")
+    public EquipmentOrderNotification send(@RequestBody EquipmentOrderNotification notification) {
+        streamBridge.send("T8", notification);
         return notification;
     }
 

@@ -67,7 +67,7 @@ public class ReparationRestController {
     }
 
 
-    @PreAuthorize("hasAuthority('INTERNAL')")
+    @PreAuthorize("hasAnyAuthority('INTERNAL', 'SUPER ADMIN')")
     //get a specific reparation
     @GetMapping("/{id}")
     public ResponseEntity<ReparationDto> getReparationById(@PathVariable("id") Long id){
